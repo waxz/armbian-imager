@@ -18,6 +18,7 @@ use sha2::{Digest, Sha256};
 use std::fs::File;
 use std::io::Read;
 use std::path::PathBuf;
+#[cfg(any(target_os = "linux", target_os = "macos"))]
 use std::process::Command;
 use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use tokio::sync::Mutex;
@@ -74,6 +75,7 @@ pub fn request_authorization(_device_path: &str) -> Result<bool, String> {
 }
 
 /// Unmount a device before flashing (platform-specific)
+#[allow(dead_code)]
 pub(crate) fn unmount_device(device_path: &str) -> Result<(), String> {
     #[cfg(target_os = "macos")]
     {
@@ -106,6 +108,7 @@ pub(crate) fn unmount_device(device_path: &str) -> Result<(), String> {
 }
 
 /// Sync device to ensure all data is written to disk
+#[allow(dead_code)]
 pub(crate) fn sync_device(_device_path: &str) {
     #[cfg(any(target_os = "linux", target_os = "macos"))]
     {
