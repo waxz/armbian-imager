@@ -17,13 +17,11 @@
     "build:dev": "tsc -b && vite build --mode development",
     "tauri:dev": "tauri dev",
     "tauri:build:dev": "tauri build --debug",
-
     "--prod": "Production commands",
     "build": "tsc -b && vite build",
     "build:prod": "tsc -b && vite build --mode production",
     "tauri:build": "tauri build",
     "tauri:build:prod": "tauri build",
-
     "--other": "Other commands",
     "lint": "eslint .",
     "preview": "vite preview",
@@ -32,6 +30,7 @@
   },
   "dependencies": {
     "@tauri-apps/api": "^2.9.1",
+    "@tauri-apps/plugin-fs": "^2.4.4",
     "lucide-react": "^0.560.0",
     "react": "^19.2.2",
     "react-dom": "^19.2.2"

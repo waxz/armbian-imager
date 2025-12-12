@@ -57,7 +57,6 @@ export interface Manufacturer {
   name: string;
   color: string;
   boardCount: number;
-  logo?: string;
 }
 
 /**

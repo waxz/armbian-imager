@@ -6,7 +6,6 @@
 export {
   MANUFACTURERS,
   getManufacturer,
-  getManufacturerLogoUrl,
   type ManufacturerConfig,
 } from './manufacturers';
 

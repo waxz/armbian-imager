@@ -22,8 +22,8 @@ use tauri::Manager;
 
 use crate::utils::get_cache_dir;
 
-/// Clean up cached images from previous sessions
-fn cleanup_image_cache() {
+/// Clean up cached download images from previous sessions (not board images)
+fn cleanup_download_cache() {
     let images_dir = get_cache_dir(config::app::NAME).join("images");
 
     if images_dir.exists() {
@@ -42,8 +42,12 @@ fn main() {
     // Initialize logging system
     logging::init();
 
-    // Clean up any leftover images from previous sessions
-    cleanup_image_cache();
+    // Clean up any leftover download images from previous sessions
+    cleanup_download_cache();
+
+    // Initialize board image cache
+    commands::image_cache::init_cache();
+
     log_info!("main", "Starting Armbian Imager");
 
     tauri::Builder::default()
@@ -55,6 +59,7 @@ fn main() {
             commands::board_queries::get_images_for_board,
             commands::board_queries::get_block_devices,
             commands::scraping::get_board_image_url,
+            commands::scraping::start_image_prefetch,
             commands::operations::request_write_authorization,
             commands::operations::download_image,
             commands::operations::flash_image,

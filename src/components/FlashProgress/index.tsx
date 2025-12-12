@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { HardDrive, AlertTriangle, Cpu } from 'lucide-react';
+import { HardDrive, AlertTriangle } from 'lucide-react';
 import type { BoardInfo, ImageInfo, BlockDevice } from '../../types';
 import { getImageLogo, getOsName } from '../../assets/os-logos';
 import {
@@ -17,6 +17,7 @@ import {
 import { FlashStageIcon, getStageText } from './FlashStageIcon';
 import { FlashActions } from './FlashActions';
 import type { FlashStage } from './FlashStageIcon';
+import fallbackImage from '../../assets/armbian-logo_nofound.png';
 
 interface FlashProgressProps {
   board: BoardInfo;
@@ -256,24 +257,11 @@ export function FlashProgress({
     <div className={`flash-container ${!showHeader ? 'centered' : ''}`}>
       {showHeader && (
         <div className="flash-header">
-          {boardImageUrl ? (
-            <img
-              src={boardImageUrl}
-              alt={board.name}
-              className="flash-board-image"
-            />
-          ) : (
-            <div
-              className="flash-board-image"
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <Cpu size={40} style={{ opacity: 0.5 }} />
-            </div>
-          )}
+          <img
+            src={boardImageUrl || fallbackImage}
+            alt={board.name}
+            className="flash-board-image"
+          />
           <div className="flash-info">
             <h2>{board.name}</h2>
             <div className="flash-info-badges">

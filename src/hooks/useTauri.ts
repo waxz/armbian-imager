@@ -75,3 +75,7 @@ export async function checkNeedsDecompression(imagePath: string): Promise<boolea
 export async function decompressCustomImage(imagePath: string): Promise<string> {
   return invoke('decompress_custom_image', { imagePath });
 }
+
+export async function startImagePrefetch(boardSlugs: string[]): Promise<void> {
+  return invoke('start_image_prefetch', { boardSlugs });
+}

@@ -22,8 +22,11 @@ pub mod urls {
     /// Armbian all-images JSON endpoint
     pub const ALL_IMAGES: &str = "https://github.armbian.com/all-images.json";
 
-    /// Base URL for board images
-    pub const BOARD_IMAGES_BASE: &str = "https://www.armbian.com/";
+    /// Base URL for board images (cache.armbian.com/images/{size}/{board_slug}.png)
+    pub const BOARD_IMAGES_BASE: &str = "https://cache.armbian.com/images/";
+
+    /// Default image size for board photos
+    pub const BOARD_IMAGE_SIZE: &str = "300";
 }
 
 /// Download and decompression settings

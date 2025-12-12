@@ -5,6 +5,7 @@ import type { BoardInfo, Manufacturer } from '../types';
 import { getBoards, getBoardImageUrl } from '../hooks/useTauri';
 import { useAsyncDataWhen } from '../hooks/useAsyncData';
 import { getManufacturer } from '../config';
+import fallbackImage from '../assets/armbian-logo_nofound.png';
 
 function getBoardColor(name: string): string {
   const colors = ['#3baed4', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16', '#f97316'];
@@ -81,13 +82,8 @@ export function BoardModal({ isOpen, onClose, onSelect, manufacturer }: BoardMod
 
   useEffect(() => {
     if (isOpen && filteredBoards.length > 0) {
-      const loadImages = async () => {
-        for (let i = 0; i < Math.min(filteredBoards.length, 10); i += 5) {
-          const batch = filteredBoards.slice(i, i + 5);
-          await Promise.all(batch.map(board => loadBoardImage(board.slug)));
-        }
-      };
-      loadImages();
+      // Load all images in parallel for faster display
+      Promise.all(filteredBoards.map(board => loadBoardImage(board.slug)));
     }
   }, [isOpen, filteredBoards, loadBoardImage]);
 
@@ -128,9 +124,12 @@ export function BoardModal({ isOpen, onClose, onSelect, manufacturer }: BoardMod
               onClick={() => onSelect(board)}
               onMouseEnter={() => loadBoardImage(board.slug)}
             >
-              <div className="list-item-icon" style={{ backgroundColor: getBoardColor(board.name) }}>
-                {boardImages[board.slug] ? (
-                  <img src={boardImages[board.slug]!} alt={board.name} />
+              <div
+                className="list-item-icon board-icon"
+                style={{ backgroundColor: board.slug in boardImages ? 'transparent' : getBoardColor(board.name) }}
+              >
+                {board.slug in boardImages ? (
+                  <img src={boardImages[board.slug] || fallbackImage} alt={board.name} />
                 ) : (
                   getBoardInitials(board.name)
                 )}

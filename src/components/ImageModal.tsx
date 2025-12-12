@@ -172,7 +172,7 @@ export function ImageModal({ isOpen, onClose, onSelect, board }: ImageModalProps
                   {displayInfo?.logo ? (
                     <img src={displayInfo.logo} alt={displayInfo.name} />
                   ) : (
-                    <Package size={20} color="white" />
+                    <Package size={32} color="white" />
                   )}
                 </div>
 

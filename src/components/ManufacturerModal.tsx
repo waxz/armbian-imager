@@ -7,31 +7,15 @@ import { useAsyncDataWhen } from '../hooks/useAsyncData';
 import {
   MANUFACTURERS,
   getManufacturer,
-  getManufacturerLogoUrl,
   type ManufacturerConfig,
 } from '../config';
 
 // Re-export Manufacturer type for backward compatibility
 export type { Manufacturer } from '../types';
 
-function ManufacturerIcon({ config, size = 36 }: { config: ManufacturerConfig; size?: number }) {
-  const [imgError, setImgError] = useState(false);
-  const logoUrl = getManufacturerLogoUrl(config.logo);
-
-  if (logoUrl && !imgError) {
-    return (
-      <div className="list-item-icon" style={{ backgroundColor: config.color, width: size, height: size }}>
-        <img
-          src={logoUrl}
-          alt={config.name}
-          onError={() => setImgError(true)}
-        />
-      </div>
-    );
-  }
-
+function ManufacturerIcon({ config }: { config: ManufacturerConfig }) {
   return (
-    <div className="list-item-icon" style={{ backgroundColor: config.color, width: size, height: size }}>
+    <div className="list-item-icon board-icon" style={{ backgroundColor: config.color }}>
       {config.name.substring(0, 2).toUpperCase()}
     </div>
   );
@@ -75,7 +59,6 @@ export function ManufacturerModal({ isOpen, onClose, onSelect }: ManufacturerMod
         name: MANUFACTURERS[key].name,
         color: MANUFACTURERS[key].color,
         boardCount: count,
-        logo: MANUFACTURERS[key].logo,
       }))
       .sort((a, b) => {
         if (a.id === 'other') return 1;
