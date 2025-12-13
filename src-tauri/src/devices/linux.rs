@@ -5,17 +5,24 @@
 use std::process::Command;
 
 use crate::utils::format_size;
+use crate::{log_error, log_info};
 
 use super::types::BlockDevice;
 
 /// Get list of block devices on Linux
 pub fn get_block_devices() -> Result<Vec<BlockDevice>, String> {
+    log_info!("devices", "Scanning for block devices on Linux");
+
     let output = Command::new("lsblk")
         .args(["-dpno", "NAME,SIZE,MODEL,RM", "-b"])
         .output()
-        .map_err(|e| format!("Failed to run lsblk: {}", e))?;
+        .map_err(|e| {
+            log_error!("devices", "Failed to run lsblk: {}", e);
+            format!("Failed to run lsblk: {}", e)
+        })?;
 
     if !output.status.success() {
+        log_error!("devices", "lsblk command failed with status: {:?}", output.status);
         return Err("lsblk command failed".to_string());
     }
 
@@ -81,6 +88,7 @@ pub fn get_block_devices() -> Result<Vec<BlockDevice>, String> {
         });
     }
 
+    log_info!("devices", "Found {} block devices", devices.len());
     Ok(devices)
 }
 

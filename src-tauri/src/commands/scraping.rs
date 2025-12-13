@@ -3,7 +3,7 @@
 //! Provides board image URLs from local cache.
 //! Images are downloaded once and served from local filesystem.
 
-use crate::log_info;
+use crate::{log_debug, log_info, log_warn};
 
 use super::image_cache::{cache_board_image, get_cached_image_path};
 
@@ -13,7 +13,7 @@ use super::image_cache::{cache_board_image, get_cached_image_path};
 pub async fn get_board_image_url(board_slug: String) -> Result<Option<String>, String> {
     // Check if we already have a cached version
     if let Some(path) = get_cached_image_path(&board_slug) {
-        log_info!("scraping", "Using cached image for {}", board_slug);
+        log_debug!("scraping", "Using cached image for {}", board_slug);
         return Ok(Some(path.to_string_lossy().to_string()));
     }
 
@@ -23,7 +23,8 @@ pub async fn get_board_image_url(board_slug: String) -> Result<Option<String>, S
             log_info!("scraping", "Downloaded and cached image for {}", board_slug);
             Ok(Some(path.to_string_lossy().to_string()))
         }
-        Err(_) => {
+        Err(e) => {
+            log_warn!("scraping", "Failed to cache image for {}: {}", board_slug, e);
             // Return None so frontend uses local fallback image
             Ok(None)
         }

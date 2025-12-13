@@ -85,3 +85,12 @@ export async function decompressCustomImage(imagePath: string): Promise<string> 
 export async function startImagePrefetch(boardSlugs: string[]): Promise<void> {
   return invoke('start_image_prefetch', { boardSlugs });
 }
+
+export interface UploadResult {
+  url: string;
+  key: string;
+}
+
+export async function uploadLogs(): Promise<UploadResult> {
+  return invoke('upload_logs');
+}

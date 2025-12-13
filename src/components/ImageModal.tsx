@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import { Download, Package, Monitor, Terminal, Zap } from 'lucide-react';
 import { Modal } from './Modal';
+import { ErrorDisplay } from './shared/ErrorDisplay';
 import type { BoardInfo, ImageInfo, ImageFilterType } from '../types';
 import { getImagesForBoard } from '../hooks/useTauri';
 import { useAsyncDataWhen } from '../hooks/useAsyncData';
@@ -149,10 +150,7 @@ export function ImageModal({ isOpen, onClose, onSelect, board }: ImageModalProps
           <p>Loading images...</p>
         </div>
       ) : error ? (
-        <div className="error">
-          <p>{error}</p>
-          <button onClick={reload} className="btn btn-primary">Retry</button>
-        </div>
+        <ErrorDisplay error={error} onRetry={reload} compact />
       ) : filteredImages.length === 0 ? (
         <div className="no-results">
           <Package size={48} />

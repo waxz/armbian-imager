@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { HardDrive, AlertTriangle } from 'lucide-react';
+import { HardDrive } from 'lucide-react';
 import type { BoardInfo, ImageInfo, BlockDevice } from '../../types';
 import { getImageLogo, getOsName } from '../../assets/os-logos';
 import {
@@ -16,6 +16,7 @@ import {
 } from '../../hooks/useTauri';
 import { FlashStageIcon, getStageText } from './FlashStageIcon';
 import { FlashActions } from './FlashActions';
+import { ErrorDisplay } from '../shared/ErrorDisplay';
 import type { FlashStage } from './FlashStageIcon';
 import fallbackImage from '../../assets/armbian-logo_nofound.png';
 
@@ -322,12 +323,7 @@ export function FlashProgress({
           </p>
         )}
 
-        {error && (
-          <div className="error-message">
-            <AlertTriangle size={16} />
-            <span>{error}</span>
-          </div>
-        )}
+        {error && <ErrorDisplay error={error} />}
 
         <FlashActions
           stage={stage}

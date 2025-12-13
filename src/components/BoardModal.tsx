@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { Search, Download } from 'lucide-react';
 import { Modal } from './Modal';
+import { ErrorDisplay } from './shared/ErrorDisplay';
 import type { BoardInfo, Manufacturer } from '../types';
 import { getBoards, getBoardImageUrl } from '../hooks/useTauri';
 import { useAsyncDataWhen } from '../hooks/useAsyncData';
@@ -113,10 +114,7 @@ export function BoardModal({ isOpen, onClose, onSelect, manufacturer }: BoardMod
           <p>Loading...</p>
         </div>
       ) : error ? (
-        <div className="error">
-          <p>{error}</p>
-          <button onClick={reload} className="btn btn-primary">Retry</button>
-        </div>
+        <ErrorDisplay error={error} onRetry={reload} compact />
       ) : (
         <div className="board-grid-container">
           {filteredBoards.map((board) => (

@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import { HardDrive, RefreshCw, AlertTriangle, Usb, Shield } from 'lucide-react';
 import { Modal } from './Modal';
+import { ErrorDisplay } from './shared/ErrorDisplay';
 import type { BlockDevice } from '../types';
 import { getBlockDevices } from '../hooks/useTauri';
 import { useAsyncDataWhen } from '../hooks/useAsyncData';
@@ -63,10 +64,7 @@ export function DeviceModal({ isOpen, onClose, onSelect }: DeviceModalProps) {
             <p>Scanning devices...</p>
           </div>
         ) : error ? (
-          <div className="error">
-            <p>{error}</p>
-            <button onClick={reload} className="btn btn-primary">Retry</button>
-          </div>
+          <ErrorDisplay error={error} onRetry={reload} compact />
         ) : devices.length === 0 ? (
           <div className="no-results">
             <Usb size={40} />

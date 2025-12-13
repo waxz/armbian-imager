@@ -14,6 +14,7 @@ mod download;
 mod flash;
 mod images;
 mod logging;
+mod paste;
 mod utils;
 
 use commands::AppState;
@@ -49,13 +50,19 @@ fn main() {
     // Initialize logging system
     logging::init();
 
+    // Log startup info
+    log_info!("main", "=== Armbian Imager Starting ===");
+    log_info!("main", "Version: {}", env!("CARGO_PKG_VERSION"));
+    log_info!("main", "OS: {} {}", std::env::consts::OS, std::env::consts::ARCH);
+    log_info!("main", "Config URLs:");
+    log_info!("main", "  - Images API: {}", config::urls::ALL_IMAGES);
+    log_info!("main", "  - Board images: {}", config::urls::BOARD_IMAGES_BASE);
+
     // Clean up any leftover download images from previous sessions
     cleanup_download_cache();
 
     // Initialize board image cache
     commands::image_cache::init_cache();
-
-    log_info!("main", "Starting Armbian Imager");
 
     tauri::Builder::default()
         .plugin(tauri_plugin_shell::init())
@@ -77,6 +84,7 @@ fn main() {
             commands::custom_image::select_custom_image,
             commands::custom_image::check_needs_decompression,
             commands::custom_image::decompress_custom_image,
+            paste::upload::upload_logs,
         ])
         .setup(|app| {
             #[cfg(debug_assertions)]

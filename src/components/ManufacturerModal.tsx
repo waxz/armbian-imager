@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import { Search } from 'lucide-react';
 import { Modal } from './Modal';
+import { ErrorDisplay } from './shared/ErrorDisplay';
 import type { BoardInfo, Manufacturer } from '../types';
 import { getBoards } from '../hooks/useTauri';
 import { useAsyncDataWhen } from '../hooks/useAsyncData';
@@ -93,10 +94,7 @@ export function ManufacturerModal({ isOpen, onClose, onSelect }: ManufacturerMod
           <p>Loading...</p>
         </div>
       ) : error ? (
-        <div className="error">
-          <p>{error}</p>
-          <button onClick={reload} className="btn btn-primary">Retry</button>
-        </div>
+        <ErrorDisplay error={error} onRetry={reload} compact />
       ) : (
         <div className="modal-list">
           {manufacturers.map((mfr) => {

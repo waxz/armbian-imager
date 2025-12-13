@@ -8,6 +8,7 @@ use std::process::Command;
 use std::os::windows::process::CommandExt;
 
 use crate::utils::format_size;
+use crate::{log_error, log_info};
 
 use super::types::BlockDevice;
 
@@ -16,6 +17,8 @@ const CREATE_NO_WINDOW: u32 = 0x08000000;
 
 /// Get list of block devices on Windows
 pub fn get_block_devices() -> Result<Vec<BlockDevice>, String> {
+    log_info!("devices", "Scanning for block devices on Windows");
+
     #[cfg(target_os = "windows")]
     let output = Command::new("powershell")
         .args([
@@ -25,7 +28,10 @@ pub fn get_block_devices() -> Result<Vec<BlockDevice>, String> {
         ])
         .creation_flags(CREATE_NO_WINDOW)
         .output()
-        .map_err(|e| format!("Failed to run PowerShell: {}", e))?;
+        .map_err(|e| {
+            log_error!("devices", "Failed to run PowerShell: {}", e);
+            format!("Failed to run PowerShell: {}", e)
+        })?;
 
     #[cfg(not(target_os = "windows"))]
     let output = Command::new("powershell")
@@ -35,16 +41,23 @@ pub fn get_block_devices() -> Result<Vec<BlockDevice>, String> {
             "Get-Disk | Where-Object { $_.BusType -ne 'NVMe' -or $_.IsSystem -eq $false } | Select-Object Number, FriendlyName, Size, BusType | ConvertTo-Json",
         ])
         .output()
-        .map_err(|e| format!("Failed to run PowerShell: {}", e))?;
+        .map_err(|e| {
+            log_error!("devices", "Failed to run PowerShell: {}", e);
+            format!("Failed to run PowerShell: {}", e)
+        })?;
 
     if !output.status.success() {
+        log_error!("devices", "PowerShell command failed with status: {:?}", output.status);
         return Err("PowerShell command failed".to_string());
     }
 
     let stdout = String::from_utf8_lossy(&output.stdout);
 
     let json: serde_json::Value =
-        serde_json::from_str(&stdout).map_err(|e| format!("Failed to parse disk info: {}", e))?;
+        serde_json::from_str(&stdout).map_err(|e| {
+            log_error!("devices", "Failed to parse disk info JSON: {}", e);
+            format!("Failed to parse disk info: {}", e)
+        })?;
 
     let mut devices = Vec::new();
 
@@ -96,6 +109,7 @@ pub fn get_block_devices() -> Result<Vec<BlockDevice>, String> {
         });
     }
 
+    log_info!("devices", "Found {} block devices", devices.len());
     Ok(devices)
 }
 

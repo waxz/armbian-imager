@@ -25,12 +25,12 @@ pub enum LogLevel {
 }
 
 impl LogLevel {
-    /// Get the string representation with fixed width for alignment
+    /// Get the string representation
     pub fn as_str(&self) -> &'static str {
         match self {
             LogLevel::Debug => "DEBUG",
-            LogLevel::Info => "INFO ",
-            LogLevel::Warn => "WARN ",
+            LogLevel::Info => "INFO",
+            LogLevel::Warn => "WARN",
             LogLevel::Error => "ERROR",
         }
     }

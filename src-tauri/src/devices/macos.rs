@@ -5,22 +5,32 @@
 use std::process::Command;
 
 use crate::utils::format_size;
+use crate::{log_error, log_info};
 
 use super::types::BlockDevice;
 
 /// Get list of block devices on macOS
 pub fn get_block_devices() -> Result<Vec<BlockDevice>, String> {
+    log_info!("devices", "Scanning for block devices on macOS");
+
     let output = Command::new("diskutil")
         .args(["list", "-plist", "external", "physical"])
         .output()
-        .map_err(|e| format!("Failed to run diskutil: {}", e))?;
+        .map_err(|e| {
+            log_error!("devices", "Failed to run diskutil: {}", e);
+            format!("Failed to run diskutil: {}", e)
+        })?;
 
     if !output.status.success() {
+        log_info!("devices", "Retrying diskutil without external flag");
         // Try without external flag for older macOS
         let output = Command::new("diskutil")
             .args(["list", "-plist"])
             .output()
-            .map_err(|e| format!("Failed to run diskutil: {}", e))?;
+            .map_err(|e| {
+                log_error!("devices", "Failed to run diskutil (fallback): {}", e);
+                format!("Failed to run diskutil: {}", e)
+            })?;
 
         return parse_diskutil(&output.stdout);
     }
@@ -35,7 +45,10 @@ fn parse_diskutil(_plist_data: &[u8]) -> Result<Vec<BlockDevice>, String> {
     let output = Command::new("diskutil")
         .args(["list"])
         .output()
-        .map_err(|e| format!("Failed to run diskutil list: {}", e))?;
+        .map_err(|e| {
+            log_error!("devices", "Failed to run diskutil list: {}", e);
+            format!("Failed to run diskutil list: {}", e)
+        })?;
 
     let list_output = String::from_utf8_lossy(&output.stdout);
     let system_disk = get_system_disk();
@@ -78,6 +91,7 @@ fn parse_diskutil(_plist_data: &[u8]) -> Result<Vec<BlockDevice>, String> {
         }
     }
 
+    log_info!("devices", "Found {} block devices", devices.len());
     Ok(devices)
 }
 
@@ -102,7 +116,10 @@ fn get_disk_info(disk_path: &str) -> Result<BlockDevice, String> {
     let output = Command::new("diskutil")
         .args(["info", disk_path])
         .output()
-        .map_err(|e| format!("Failed to get disk info: {}", e))?;
+        .map_err(|e| {
+            log_error!("devices", "Failed to get disk info for {}: {}", disk_path, e);
+            format!("Failed to get disk info: {}", e)
+        })?;
 
     let info = String::from_utf8_lossy(&output.stdout);
 
