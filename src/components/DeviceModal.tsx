@@ -90,14 +90,14 @@ export function DeviceModal({ isOpen, onClose, onSelect }: DeviceModalProps) {
                   disabled={device.is_system}
                   style={{ opacity: device.is_system ? 0.5 : 1 }}
                 >
-                  <div className="list-item-icon board-icon" style={{
+                  <div className="list-item-icon" style={{
                     backgroundColor: device.is_system ? 'rgba(239, 68, 68, 0.1)' :
                       device.is_removable ? 'rgba(16, 185, 129, 0.1)' : 'var(--bg-secondary)',
                     color: device.is_system ? '#ef4444' :
                       device.is_removable ? '#10b981' : 'var(--text-secondary)'
                   }}>
-                    {device.is_system ? <Shield size={32} /> :
-                      device.is_removable ? <Usb size={32} /> : <HardDrive size={32} />}
+                    {device.is_system ? <Shield size={24} /> :
+                      device.is_removable ? <Usb size={24} /> : <HardDrive size={24} />}
                   </div>
                   <div className="list-item-content">
                     <div className="list-item-title">

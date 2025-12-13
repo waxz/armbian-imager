@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
-import { Search, Star } from 'lucide-react';
+import { Search, Download } from 'lucide-react';
 import { Modal } from './Modal';
 import type { BoardInfo, Manufacturer } from '../types';
 import { getBoards, getBoardImageUrl } from '../hooks/useTauri';
@@ -89,22 +89,24 @@ export function BoardModal({ isOpen, onClose, onSelect, manufacturer }: BoardMod
 
   const title = manufacturer ? `${manufacturer.name} Boards` : 'Select Board';
 
-  return (
-    <Modal isOpen={isOpen} onClose={onClose} title={title}>
-      <div className="modal-search">
-        <div className="search-box" style={{ marginBottom: 0 }}>
-          <Search className="search-icon" size={18} />
-          <input
-            type="text"
-            placeholder="Search boards..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="search-input"
-            autoFocus
-          />
-        </div>
+  const searchBarContent = (
+    <div className="modal-search">
+      <div className="search-box" style={{ marginBottom: 0 }}>
+        <Search className="search-icon" size={18} />
+        <input
+          type="text"
+          placeholder="Search boards..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="search-input"
+          autoFocus
+        />
       </div>
+    </div>
+  );
 
+  return (
+    <Modal isOpen={isOpen} onClose={onClose} title={title} searchBar={searchBarContent}>
       {loading ? (
         <div className="loading">
           <div className="spinner" />
@@ -116,30 +118,32 @@ export function BoardModal({ isOpen, onClose, onSelect, manufacturer }: BoardMod
           <button onClick={reload} className="btn btn-primary">Retry</button>
         </div>
       ) : (
-        <div className="modal-list">
+        <div className="board-grid-container">
           {filteredBoards.map((board) => (
             <button
               key={board.slug}
-              className="list-item"
+              className="board-grid-item"
               onClick={() => onSelect(board)}
               onMouseEnter={() => loadBoardImage(board.slug)}
             >
+              <span className="badge-image-count"><Download size={10} />{board.image_count}</span>
               <div
-                className="list-item-icon board-icon"
-                style={{ backgroundColor: board.slug in boardImages ? 'transparent' : getBoardColor(board.name) }}
+                className="board-grid-image"
+                style={{ backgroundColor: !(board.slug in boardImages) ? getBoardColor(board.name) : 'transparent' }}
               >
                 {board.slug in boardImages ? (
-                  <img src={boardImages[board.slug] || fallbackImage} alt={board.name} />
+                  <img
+                    src={boardImages[board.slug] || fallbackImage}
+                    alt={board.name}
+                    className={!boardImages[board.slug] ? 'fallback-image' : ''}
+                  />
                 ) : (
-                  getBoardInitials(board.name)
+                  <span className="board-initials">{getBoardInitials(board.name)}</span>
                 )}
               </div>
-              <div className="list-item-content">
-                <div className="list-item-title">
-                  {board.name}
-                  {board.has_promoted && <Star className="promoted-star" size={14} fill="currentColor" style={{ marginLeft: 6 }} />}
-                </div>
-                <div className="list-item-subtitle">{board.image_count} images available</div>
+              <div className="board-grid-info">
+                <div className="board-grid-name">{board.name}</div>
+                {board.has_promoted && <span className="badge-recommended">Recommended</span>}
               </div>
             </button>
           ))}

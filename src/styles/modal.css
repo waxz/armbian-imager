@@ -30,6 +30,7 @@
   justify-content: space-between;
   padding: 16px 20px;
   background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-light);
 }
 
 .modal-title {

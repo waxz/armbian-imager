@@ -94,15 +94,21 @@ impl ImageCache {
     }
 
     fn get_cached_path(&self, board_slug: &str) -> PathBuf {
-        self.cache_dir.join(format!("{}.png", board_slug))
+        // Include image size in filename so cache invalidates when size changes
+        self.cache_dir.join(format!("{}_{}.png", board_slug, config::urls::BOARD_IMAGE_SIZE))
+    }
+
+    fn get_cache_key(&self, board_slug: &str) -> String {
+        // Include image size in cache key so cache invalidates when size changes
+        format!("{}_{}", board_slug, config::urls::BOARD_IMAGE_SIZE)
     }
 
     fn get_entry(&self, board_slug: &str) -> Option<&CacheEntry> {
-        self.metadata.entries.get(board_slug)
+        self.metadata.entries.get(&self.get_cache_key(board_slug))
     }
 
-    fn set_entry(&mut self, board_slug: String, entry: CacheEntry) {
-        self.metadata.entries.insert(board_slug, entry);
+    fn set_entry(&mut self, board_slug: &str, entry: CacheEntry) {
+        self.metadata.entries.insert(self.get_cache_key(board_slug), entry);
         self.save_metadata();
     }
 
@@ -203,6 +209,19 @@ pub async fn cache_board_image(board_slug: &str) -> Result<PathBuf, String> {
         ));
     }
 
+    // Verify content type is an image
+    let content_type = response
+        .headers()
+        .get("content-type")
+        .and_then(|v| v.to_str().ok())
+        .unwrap_or("");
+    if !content_type.starts_with("image/") {
+        return Err(format!(
+            "Invalid content type for image: {} (expected image/*)",
+            content_type
+        ));
+    }
+
     // Extract headers for caching
     let etag = response
         .headers()
@@ -228,7 +247,7 @@ pub async fn cache_board_image(board_slug: &str) -> Result<PathBuf, String> {
     {
         let mut cache = IMAGE_CACHE.lock().map_err(|e| e.to_string())?;
         cache.set_entry(
-            board_slug.to_string(),
+            board_slug,
             CacheEntry {
                 etag,
                 last_modified,

@@ -1,4 +1,5 @@
 import { invoke } from '@tauri-apps/api/core';
+import { convertFileSrc } from '@tauri-apps/api/core';
 import type { BoardInfo, ImageInfo, BlockDevice, DownloadProgress, FlashProgress, CustomImageInfo } from '../types';
 
 export async function getBoards(): Promise<BoardInfo[]> {
@@ -22,7 +23,12 @@ export async function getImagesForBoard(
 }
 
 export async function getBoardImageUrl(boardSlug: string): Promise<string | null> {
-  return invoke('get_board_image_url', { boardSlug });
+  const path: string | null = await invoke('get_board_image_url', { boardSlug });
+  if (path) {
+    // Convert local file path to asset URL that webview can load
+    return convertFileSrc(path);
+  }
+  return null;
 }
 
 export async function getBlockDevices(): Promise<BlockDevice[]> {

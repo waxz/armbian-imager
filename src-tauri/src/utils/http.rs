@@ -15,6 +15,7 @@ pub fn create_short_timeout_client() -> Result<Client, String> {
         .user_agent(config::app::USER_AGENT)
         .timeout(Duration::from_secs(config::http::SHORT_TIMEOUT_SECS))
         .connect_timeout(Duration::from_secs(config::http::SHORT_TIMEOUT_SECS))
+        .redirect(reqwest::redirect::Policy::limited(10))
         .build()
         .map_err(|e| format!("Failed to create HTTP client: {}", e))
 }

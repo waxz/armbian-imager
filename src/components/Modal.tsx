@@ -6,9 +6,10 @@ interface ModalProps {
   onClose: () => void;
   title: string;
   children: ReactNode;
+  searchBar?: ReactNode;
 }
 
-export function Modal({ isOpen, onClose, title, children }: ModalProps) {
+export function Modal({ isOpen, onClose, title, children, searchBar }: ModalProps) {
   const handleEscape = useCallback((e: KeyboardEvent) => {
     if (e.key === 'Escape') {
       onClose();
@@ -37,6 +38,7 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
             <X size={20} />
           </button>
         </div>
+        {searchBar}
         <div className="modal-body">
           {children}
         </div>

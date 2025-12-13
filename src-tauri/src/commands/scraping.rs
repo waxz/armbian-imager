@@ -1,40 +1,27 @@
 //! Board image URL module
 //!
-//! Provides board image URLs from CDN with local cache for performance.
-//! The cache is used to avoid re-downloading images and to check if an image exists.
+//! Provides board image URLs from local cache.
+//! Images are downloaded once and served from local filesystem.
 
-use crate::config;
 use crate::log_info;
 
 use super::image_cache::{cache_board_image, get_cached_image_path};
 
-/// Get board image URL - returns CDN URL for the image
-/// Uses local cache to verify image exists, returns fallback if not
+/// Get board image URL - returns local file path for the cached image
+/// Downloads and caches image if not already cached
 #[tauri::command]
 pub async fn get_board_image_url(board_slug: String) -> Result<Option<String>, String> {
-    // Check if we already have a cached version (means image exists)
-    if get_cached_image_path(&board_slug).is_some() {
-        // Return CDN URL since we know the image exists
-        let url = format!(
-            "{}{}/{}.png",
-            config::urls::BOARD_IMAGES_BASE,
-            config::urls::BOARD_IMAGE_SIZE,
-            board_slug
-        );
-        return Ok(Some(url));
+    // Check if we already have a cached version
+    if let Some(path) = get_cached_image_path(&board_slug) {
+        log_info!("scraping", "Using cached image for {}", board_slug);
+        return Ok(Some(path.to_string_lossy().to_string()));
     }
 
-    // Try to download and cache to verify image exists
+    // Try to download and cache
     match cache_board_image(&board_slug).await {
-        Ok(_) => {
-            // Return CDN URL
-            let url = format!(
-                "{}{}/{}.png",
-                config::urls::BOARD_IMAGES_BASE,
-                config::urls::BOARD_IMAGE_SIZE,
-                board_slug
-            );
-            Ok(Some(url))
+        Ok(path) => {
+            log_info!("scraping", "Downloaded and cached image for {}", board_slug);
+            Ok(Some(path.to_string_lossy().to_string()))
         }
         Err(_) => {
             // Return None so frontend uses local fallback image

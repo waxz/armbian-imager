@@ -15,7 +15,7 @@ export type { Manufacturer } from '../types';
 
 function ManufacturerIcon({ config }: { config: ManufacturerConfig }) {
   return (
-    <div className="list-item-icon board-icon" style={{ backgroundColor: config.color }}>
+    <div className="list-item-icon" style={{ backgroundColor: config.color }}>
       {config.name.substring(0, 2).toUpperCase()}
     </div>
   );
@@ -69,22 +69,24 @@ export function ManufacturerModal({ isOpen, onClose, onSelect }: ManufacturerMod
     return result;
   }, [boards, search]);
 
-  return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Select Manufacturer">
-      <div className="modal-search">
-        <div className="search-box" style={{ marginBottom: 0 }}>
-          <Search className="search-icon" size={18} />
-          <input
-            type="text"
-            placeholder="Search manufacturer..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="search-input"
-            autoFocus
-          />
-        </div>
+  const searchBarContent = (
+    <div className="modal-search">
+      <div className="search-box" style={{ marginBottom: 0 }}>
+        <Search className="search-icon" size={18} />
+        <input
+          type="text"
+          placeholder="Search manufacturer..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="search-input"
+          autoFocus
+        />
       </div>
+    </div>
+  );
 
+  return (
+    <Modal isOpen={isOpen} onClose={onClose} title="Select Manufacturer" searchBar={searchBarContent}>
       {loading ? (
         <div className="loading">
           <div className="spinner" />

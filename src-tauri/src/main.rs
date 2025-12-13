@@ -17,7 +17,6 @@ mod logging;
 mod utils;
 
 use commands::AppState;
-#[cfg(debug_assertions)]
 use tauri::Manager;
 
 use crate::utils::get_cache_dir;
@@ -35,6 +34,14 @@ fn cleanup_download_cache() {
                 }
             }
         }
+    }
+}
+
+/// Clean up board images cache on app exit
+fn cleanup_board_images_cache() {
+    log_info!("main", "Cleaning up board images cache on exit");
+    if let Err(e) = commands::image_cache::clear_cache() {
+        log_error!("main", "Failed to clear board images cache: {}", e);
     }
 }
 
@@ -80,6 +87,11 @@ fn main() {
             }
             let _ = app; // Suppress unused warning in release
             Ok(())
+        })
+        .on_window_event(|_window, event| {
+            if let tauri::WindowEvent::Destroyed = event {
+                cleanup_board_images_cache();
+            }
         })
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
