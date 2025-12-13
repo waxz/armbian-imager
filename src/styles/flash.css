@@ -29,10 +29,9 @@
 .flash-board-image {
   width: 100px;
   height: 100px;
-  border-radius: 10px;
-  object-fit: cover;
-  background: var(--bg-secondary);
+  object-fit: contain;
   flex-shrink: 0;
+  transform: scale(2);
 }
 
 .flash-info {
