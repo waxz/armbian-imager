@@ -18,6 +18,7 @@ mod paste;
 mod utils;
 
 use commands::AppState;
+#[allow(unused_imports)] // Used by get_webview_window in debug builds
 use tauri::Manager;
 
 use crate::utils::get_cache_dir;
