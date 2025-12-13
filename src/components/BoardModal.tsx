@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { Search, Download } from 'lucide-react';
 import { Modal } from './Modal';
 import { ErrorDisplay } from './shared/ErrorDisplay';
@@ -7,23 +7,6 @@ import { getBoards, getBoardImageUrl } from '../hooks/useTauri';
 import { useAsyncDataWhen } from '../hooks/useAsyncData';
 import { getManufacturer } from '../config';
 import fallbackImage from '../assets/armbian-logo_nofound.png';
-
-function getBoardColor(name: string): string {
-  const colors = ['#3baed4', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16', '#f97316'];
-  let hash = 0;
-  for (let i = 0; i < name.length; i++) {
-    hash = name.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  return colors[Math.abs(hash) % colors.length];
-}
-
-function getBoardInitials(name: string): string {
-  const words = name.split(/[\s-]+/).filter(w => w.length > 0);
-  if (words.length >= 2) {
-    return (words[0][0] + words[1][0]).toUpperCase();
-  }
-  return name.substring(0, 2).toUpperCase();
-}
 
 interface BoardModalProps {
   isOpen: boolean;
@@ -35,8 +18,8 @@ interface BoardModalProps {
 export function BoardModal({ isOpen, onClose, onSelect, manufacturer }: BoardModalProps) {
   const [search, setSearch] = useState('');
   const [boardImages, setBoardImages] = useState<Record<string, string | null>>({});
-  const loadingImagesRef = useRef<Set<string>>(new Set());
-  const loadedRef = useRef<Set<string>>(new Set());
+  const [imagesReady, setImagesReady] = useState(false);
+  const loadedSlugsRef = useRef<Set<string>>(new Set());
 
   // Use hook for async data fetching
   const { data: boards, loading, error, reload } = useAsyncDataWhen<BoardInfo[]>(
@@ -47,22 +30,64 @@ export function BoardModal({ isOpen, onClose, onSelect, manufacturer }: BoardMod
 
   useEffect(() => {
     setSearch('');
+    setImagesReady(false);
   }, [manufacturer]);
 
-  const loadBoardImage = useCallback(async (slug: string) => {
-    if (loadedRef.current.has(slug) || loadingImagesRef.current.has(slug)) return;
-    loadingImagesRef.current.add(slug);
-    try {
-      const url = await getBoardImageUrl(slug);
-      loadedRef.current.add(slug);
-      setBoardImages((prev) => ({ ...prev, [slug]: url }));
-    } catch {
-      loadedRef.current.add(slug);
-      setBoardImages((prev) => ({ ...prev, [slug]: null }));
-    } finally {
-      loadingImagesRef.current.delete(slug);
+  // Pre-load images for current manufacturer
+  useEffect(() => {
+    if (!isOpen || !manufacturer || !boards) return;
+
+    const manufacturerBoards = boards.filter((board) => {
+      const mfr = getManufacturer(board.slug, board.name);
+      return mfr === manufacturer.id;
+    });
+
+    if (manufacturerBoards.length === 0) {
+      setImagesReady(true);
+      return;
     }
-  }, []);
+
+    let cancelled = false;
+
+    const loadImages = async () => {
+      setImagesReady(false);
+
+      await Promise.all(manufacturerBoards.map(async (board) => {
+        if (loadedSlugsRef.current.has(board.slug)) return;
+
+        const url = await getBoardImageUrl(board.slug);
+        if (!url) {
+          loadedSlugsRef.current.add(board.slug);
+          setBoardImages((prev) => ({ ...prev, [board.slug]: null }));
+          return;
+        }
+
+        // Pre-load in browser
+        await new Promise<void>((resolve) => {
+          const img = new Image();
+          img.onload = () => {
+            loadedSlugsRef.current.add(board.slug);
+            setBoardImages((prev) => ({ ...prev, [board.slug]: url }));
+            resolve();
+          };
+          img.onerror = () => {
+            loadedSlugsRef.current.add(board.slug);
+            setBoardImages((prev) => ({ ...prev, [board.slug]: null }));
+            resolve();
+          };
+          img.src = url;
+        });
+      }));
+
+      if (!cancelled) {
+        setImagesReady(true);
+      }
+    };
+
+    loadImages();
+
+    return () => { cancelled = true; };
+  }, [isOpen, manufacturer?.id, boards]);
 
   const filteredBoards = useMemo(() => {
     if (!manufacturer || !boards) return [];
@@ -80,13 +105,6 @@ export function BoardModal({ isOpen, onClose, onSelect, manufacturer }: BoardMod
         return a.name.localeCompare(b.name);
       });
   }, [boards, manufacturer, search]);
-
-  useEffect(() => {
-    if (isOpen && filteredBoards.length > 0) {
-      // Load all images in parallel for faster display
-      Promise.all(filteredBoards.map(board => loadBoardImage(board.slug)));
-    }
-  }, [isOpen, filteredBoards, loadBoardImage]);
 
   const title = manufacturer ? `${manufacturer.name} Boards` : 'Select Board';
 
@@ -108,7 +126,7 @@ export function BoardModal({ isOpen, onClose, onSelect, manufacturer }: BoardMod
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={title} searchBar={searchBarContent}>
-      {loading ? (
+      {loading || !imagesReady ? (
         <div className="loading">
           <div className="spinner" />
           <p>Loading...</p>
@@ -122,22 +140,21 @@ export function BoardModal({ isOpen, onClose, onSelect, manufacturer }: BoardMod
               key={board.slug}
               className="board-grid-item"
               onClick={() => onSelect(board)}
-              onMouseEnter={() => loadBoardImage(board.slug)}
             >
               <span className="badge-image-count"><Download size={10} />{board.image_count}</span>
-              <div
-                className="board-grid-image"
-                style={{ backgroundColor: !(board.slug in boardImages) ? getBoardColor(board.name) : 'transparent' }}
-              >
-                {board.slug in boardImages ? (
-                  <img
-                    src={boardImages[board.slug] || fallbackImage}
-                    alt={board.name}
-                    className={!boardImages[board.slug] ? 'fallback-image' : ''}
-                  />
-                ) : (
-                  <span className="board-initials">{getBoardInitials(board.name)}</span>
-                )}
+              <div className="board-grid-image">
+                <img
+                  src={boardImages[board.slug] || fallbackImage}
+                  alt={board.name}
+                  className={!boardImages[board.slug] ? 'fallback-image' : ''}
+                  onError={(e) => {
+                    const img = e.currentTarget;
+                    if (img.src !== fallbackImage) {
+                      img.src = fallbackImage;
+                      img.className = 'fallback-image';
+                    }
+                  }}
+                />
               </div>
               <div className="board-grid-info">
                 <div className="board-grid-name">{board.name}</div>

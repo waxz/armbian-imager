@@ -48,8 +48,6 @@ export interface FlashProgress {
   error: string | null;
 }
 
-export type Step = 'board' | 'image' | 'device' | 'flash';
-
 /**
  * Manufacturer information for board categorization
  */
