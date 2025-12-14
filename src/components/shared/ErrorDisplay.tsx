@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Upload, ExternalLink, AlertCircle } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { uploadLogs, openUrl } from '../../hooks/useTauri';
 import QRCode from 'qrcode';
 
@@ -10,6 +11,7 @@ interface ErrorDisplayProps {
 }
 
 export function ErrorDisplay({ error, onRetry, compact = false }: ErrorDisplayProps) {
+  const { t } = useTranslation();
   const [uploading, setUploading] = useState(false);
   const [pasteUrl, setPasteUrl] = useState<string | null>(null);
   const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string | null>(null);
@@ -35,7 +37,7 @@ export function ErrorDisplay({ error, onRetry, compact = false }: ErrorDisplayPr
         setQrCodeDataUrl(qrDataUrl);
       }
     } catch (err) {
-      setUploadError(err instanceof Error ? err.message : 'Upload failed');
+      setUploadError(err instanceof Error ? err.message : t('error.uploadFailed'));
     } finally {
       setUploading(false);
     }
@@ -60,7 +62,7 @@ export function ErrorDisplay({ error, onRetry, compact = false }: ErrorDisplayPr
         <div className="error-display-actions">
           {onRetry && (
             <button onClick={onRetry} className="btn btn-primary btn-sm">
-              Retry
+              {t('errorDisplay.retry')}
             </button>
           )}
           {!pasteUrl ? (
@@ -70,12 +72,12 @@ export function ErrorDisplay({ error, onRetry, compact = false }: ErrorDisplayPr
               disabled={uploading}
             >
               <Upload size={14} />
-              {uploading ? 'Uploading...' : 'Upload Logs'}
+              {uploading ? t('errorDisplay.uploading') : t('errorDisplay.uploadLogs')}
             </button>
           ) : (
             <button className="btn btn-secondary btn-sm" onClick={handleOpenUrl}>
               <ExternalLink size={14} />
-              View Logs
+              {t('errorDisplay.viewLogs')}
             </button>
           )}
         </div>
@@ -103,7 +105,7 @@ export function ErrorDisplay({ error, onRetry, compact = false }: ErrorDisplayPr
           disabled={uploading}
         >
           <Upload size={16} />
-          {uploading ? 'Uploading logs...' : 'Upload Logs for Support'}
+          {uploading ? t('errorDisplay.uploadingLogs') : t('errorDisplay.uploadLogsForSupport')}
         </button>
       ) : (
         <div className="paste-result">
@@ -113,7 +115,7 @@ export function ErrorDisplay({ error, onRetry, compact = false }: ErrorDisplayPr
             )}
           </div>
           <div className="paste-info">
-            <span className="paste-label">Scan QR or share this link:</span>
+            <span className="paste-label">{t('errorDisplay.scanQrOrShare')}</span>
             <button className="paste-url" onClick={handleOpenUrl}>
               {pasteUrl}
               <ExternalLink size={12} />

@@ -1,10 +1,20 @@
 //! System utilities commands
 //!
-//! Platform-specific system operations like opening URLs.
+//! Platform-specific system operations like opening URLs and locale detection.
 
 use crate::log_info;
+use sys_locale::get_locale;
 
 const MODULE: &str = "commands::system";
+
+/// Get the system locale (e.g., "en-US", "it-IT", "de-DE")
+/// Returns the language code for i18n initialization
+#[tauri::command]
+pub fn get_system_locale() -> String {
+    let locale = get_locale().unwrap_or_else(|| "en-US".to_string());
+    log_info!(MODULE, "Detected system locale: {}", locale);
+    locale
+}
 
 /// Open a URL in the default browser
 /// On Linux when running as root, uses runuser to open as the original user

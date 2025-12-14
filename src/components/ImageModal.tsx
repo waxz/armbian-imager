@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
 import { Download, Package, Monitor, Terminal, Zap } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { Modal } from './Modal';
 import { ErrorDisplay } from './shared/ErrorDisplay';
 import type { BoardInfo, ImageInfo, ImageFilterType } from '../types';
@@ -22,8 +23,8 @@ interface ImageModalProps {
   board: BoardInfo | null;
 }
 
-function formatSize(bytes: number): string {
-  if (bytes === 0) return 'Unknown';
+function formatSize(bytes: number, unknownText: string): string {
+  if (bytes === 0) return unknownText;
   const gb = bytes / (1024 * 1024 * 1024);
   if (gb >= 1) return `${gb.toFixed(1)} GB`;
   const mb = bytes / (1024 * 1024);
@@ -64,6 +65,7 @@ function applyFilter(images: ImageInfo[], filter: ImageFilterType): ImageInfo[] 
 }
 
 export function ImageModal({ isOpen, onClose, onSelect, board }: ImageModalProps) {
+  const { t } = useTranslation();
   const [filterType, setFilterType] = useState<ImageFilterType>('all');
 
   // Use hook for async data fetching
@@ -91,7 +93,7 @@ export function ImageModal({ isOpen, onClose, onSelect, board }: ImageModalProps
     return applyFilter(allImages, filterType);
   }, [allImages, filterType]);
 
-  const title = board ? `${board.name} - Select OS` : 'Select Operating System';
+  const title = board ? `${board.name} - ${t('modal.selectImage')}` : t('modal.selectImage');
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={title}>
@@ -100,14 +102,14 @@ export function ImageModal({ isOpen, onClose, onSelect, board }: ImageModalProps
           className={`filter-btn ${filterType === 'all' ? 'active' : ''}`}
           onClick={() => setFilterType('all')}
         >
-          All
+          {t('modal.allImages')}
         </button>
         {availableFilters.recommended && (
           <button
             className={`filter-btn ${filterType === 'recommended' ? 'active' : ''}`}
             onClick={() => setFilterType('recommended')}
           >
-            Recommended
+            {t('modal.promoted')}
           </button>
         )}
         {availableFilters.stable && (
@@ -115,7 +117,7 @@ export function ImageModal({ isOpen, onClose, onSelect, board }: ImageModalProps
             className={`filter-btn ${filterType === 'stable' ? 'active' : ''}`}
             onClick={() => setFilterType('stable')}
           >
-            Stable
+            {t('modal.stable')}
           </button>
         )}
         {availableFilters.nightly && (
@@ -123,7 +125,7 @@ export function ImageModal({ isOpen, onClose, onSelect, board }: ImageModalProps
             className={`filter-btn ${filterType === 'nightly' ? 'active' : ''}`}
             onClick={() => setFilterType('nightly')}
           >
-            Nightly
+            {t('modal.nightly')}
           </button>
         )}
         {availableFilters.apps && (
@@ -131,7 +133,7 @@ export function ImageModal({ isOpen, onClose, onSelect, board }: ImageModalProps
             className={`filter-btn ${filterType === 'apps' ? 'active' : ''}`}
             onClick={() => setFilterType('apps')}
           >
-            Apps
+            {t('modal.apps')}
           </button>
         )}
         {availableFilters.barebone && (
@@ -139,7 +141,7 @@ export function ImageModal({ isOpen, onClose, onSelect, board }: ImageModalProps
             className={`filter-btn ${filterType === 'barebone' ? 'active' : ''}`}
             onClick={() => setFilterType('barebone')}
           >
-            Minimal
+            {t('modal.minimal')}
           </button>
         )}
       </div>
@@ -147,16 +149,16 @@ export function ImageModal({ isOpen, onClose, onSelect, board }: ImageModalProps
       {loading ? (
         <div className="loading">
           <div className="spinner" />
-          <p>Loading images...</p>
+          <p>{t('modal.loading')}</p>
         </div>
       ) : error ? (
         <ErrorDisplay error={error} onRetry={reload} compact />
       ) : filteredImages.length === 0 ? (
         <div className="no-results">
           <Package size={48} />
-          <p>No images found</p>
+          <p>{t('modal.noImages')}</p>
           <button onClick={() => setFilterType('all')} className="btn btn-secondary">
-            Show all images
+            {t('modal.allImages')}
           </button>
         </div>
       ) : (
@@ -195,7 +197,7 @@ export function ImageModal({ isOpen, onClose, onSelect, board }: ImageModalProps
                     )}
                   </div>
                   <div className="list-item-badges" style={{ display: 'flex', gap: 4, marginTop: 4, flexWrap: 'wrap' }}>
-                    {image.promoted && <span className="badge badge-recommended">Recommended</span>}
+                    {image.promoted && <span className="badge badge-recommended">{t('modal.promoted')}</span>}
                     {desktopEnv && DESKTOP_BADGES[desktopEnv] ? (
                       <span className="badge badge-desktop" style={{ backgroundColor: DESKTOP_BADGES[desktopEnv].color }}>
                         <Monitor size={12} style={{ marginRight: 4, flexShrink: 0 }} />
@@ -217,7 +219,7 @@ export function ImageModal({ isOpen, onClose, onSelect, board }: ImageModalProps
                 </div>
                 <div className="list-item-meta" style={{ display: 'flex', alignItems: 'center', gap: 4, color: 'var(--text-secondary)' }}>
                   <Download size={14} />
-                  {formatSize(image.file_size)}
+                  {formatSize(image.file_size, t('common.unknown'))}
                 </div>
               </button>
             );

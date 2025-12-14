@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { HardDrive, RefreshCw, AlertTriangle, Shield, MemoryStick, Usb } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { Modal } from './Modal';
 import { ErrorDisplay } from './shared/ErrorDisplay';
 import type { BlockDevice } from '../types';
@@ -84,20 +85,20 @@ function DeviceIcon({ type, size = 24 }: { type: DeviceType; size?: number }) {
 }
 
 /** Get badge text for device type */
-function getDeviceBadge(type: DeviceType): string | null {
+function getDeviceBadge(type: DeviceType, t: (key: string) => string): string | null {
   switch (type) {
     case 'system':
-      return 'System';
+      return t('device.system');
     case 'sd':
-      return 'SD Card';
+      return t('device.sdCard');
     case 'usb':
-      return 'USB';
+      return t('device.usb');
     case 'sata':
-      return 'SATA';
+      return t('device.sata');
     case 'sas':
-      return 'SAS';
+      return t('device.sas');
     case 'nvme':
-      return 'NVMe';
+      return t('device.nvme');
     default:
       return null;
   }
@@ -127,6 +128,7 @@ interface DeviceModalProps {
 }
 
 export function DeviceModal({ isOpen, onClose, onSelect }: DeviceModalProps) {
+  const { t } = useTranslation();
   const [selectedDevice, setSelectedDevice] = useState<BlockDevice | null>(null);
   const [showConfirm, setShowConfirm] = useState(false);
 
@@ -185,29 +187,29 @@ export function DeviceModal({ isOpen, onClose, onSelect }: DeviceModalProps) {
 
   return (
     <>
-      <Modal isOpen={isOpen && !showConfirm} onClose={onClose} title="Select Storage Device">
+      <Modal isOpen={isOpen && !showConfirm} onClose={onClose} title={t('modal.selectDevice')}>
         <div className="modal-warning-banner">
           <AlertTriangle size={16} />
-          <span>All data on selected device will be erased</span>
+          <span>{t('flash.dataWarning')}</span>
         </div>
 
         {loading ? (
           <div className="loading">
             <div className="spinner" />
-            <p>Scanning devices...</p>
+            <p>{t('modal.scanningDevices')}</p>
           </div>
         ) : error ? (
           <ErrorDisplay error={error} onRetry={reload} compact />
         ) : devices.length === 0 ? (
           <div className="no-results">
             <Usb size={40} />
-            <p>No devices found</p>
+            <p>{t('modal.noDevices')}</p>
             <p style={{ fontSize: 12, color: 'var(--text-muted)' }}>
-              Insert an SD card or USB drive
+              {t('modal.insertDevice')}
             </p>
             <button className="btn btn-secondary" onClick={reload} disabled={loading} style={{ marginTop: 16 }}>
               <RefreshCw size={14} className={loading ? 'spin' : ''} />
-              Refresh
+              {t('device.refresh')}
             </button>
           </div>
         ) : (
@@ -215,7 +217,7 @@ export function DeviceModal({ isOpen, onClose, onSelect }: DeviceModalProps) {
             <div className="modal-list">
               {devices.map((device) => {
                 const deviceType = getDeviceType(device);
-                const badge = getDeviceBadge(deviceType);
+                const badge = getDeviceBadge(deviceType, t);
                 return (
                   <button
                     key={device.path}
@@ -260,7 +262,7 @@ export function DeviceModal({ isOpen, onClose, onSelect }: DeviceModalProps) {
             <div className="modal-refresh-bottom">
               <button className="btn btn-secondary" onClick={reload} disabled={loading}>
                 <RefreshCw size={14} className={loading ? 'spin' : ''} />
-                Refresh Devices
+                {t('modal.refreshDevices')}
               </button>
             </div>
           </>
@@ -274,19 +276,19 @@ export function DeviceModal({ isOpen, onClose, onSelect }: DeviceModalProps) {
             <div className="confirm-icon">
               <AlertTriangle size={32} color="#f59e0b" />
             </div>
-            <h3 className="confirm-title">Confirm Selection</h3>
-            <p className="confirm-text">You are about to write to:</p>
+            <h3 className="confirm-title">{t('flash.confirmTitle')}</h3>
+            <p className="confirm-text">{t('flash.confirmText')}</p>
             <div className="confirm-device">
               <strong>{selectedDevice.model || selectedDevice.name}</strong>
               <span>{selectedDevice.name} ({selectedDevice.size_formatted})</span>
             </div>
-            <p className="confirm-warning">ALL DATA WILL BE PERMANENTLY ERASED</p>
+            <p className="confirm-warning">{t('flash.confirmWarning')}</p>
             <div className="confirm-actions">
               <button className="btn btn-secondary" onClick={() => setShowConfirm(false)}>
-                Cancel
+                {t('flash.cancel')}
               </button>
               <button className="btn btn-danger" onClick={handleConfirm}>
-                Erase & Flash
+                {t('flash.eraseAndFlash')}
               </button>
             </div>
           </div>

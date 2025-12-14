@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { Search, Download } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { Modal } from './Modal';
 import { ErrorDisplay } from './shared/ErrorDisplay';
 import type { BoardInfo, Manufacturer } from '../types';
@@ -16,6 +17,7 @@ interface BoardModalProps {
 }
 
 export function BoardModal({ isOpen, onClose, onSelect, manufacturer }: BoardModalProps) {
+  const { t } = useTranslation();
   const [search, setSearch] = useState('');
   const [boardImages, setBoardImages] = useState<Record<string, string | null>>({});
   const [imagesReady, setImagesReady] = useState(false);
@@ -106,7 +108,7 @@ export function BoardModal({ isOpen, onClose, onSelect, manufacturer }: BoardMod
       });
   }, [boards, manufacturer, search]);
 
-  const title = manufacturer ? `${manufacturer.name} Boards` : 'Select Board';
+  const title = manufacturer ? `${manufacturer.name} ${t('home.boards')}` : t('modal.selectBoard');
 
   const searchBarContent = (
     <div className="modal-search">
@@ -114,7 +116,7 @@ export function BoardModal({ isOpen, onClose, onSelect, manufacturer }: BoardMod
         <Search className="search-icon" size={18} />
         <input
           type="text"
-          placeholder="Search boards..."
+          placeholder={t('modal.searchBoard')}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="search-input"
@@ -129,7 +131,7 @@ export function BoardModal({ isOpen, onClose, onSelect, manufacturer }: BoardMod
       {loading || !imagesReady ? (
         <div className="loading">
           <div className="spinner" />
-          <p>Loading...</p>
+          <p>{t('modal.loading')}</p>
         </div>
       ) : error ? (
         <ErrorDisplay error={error} onRetry={reload} compact />
@@ -158,13 +160,13 @@ export function BoardModal({ isOpen, onClose, onSelect, manufacturer }: BoardMod
               </div>
               <div className="board-grid-info">
                 <div className="board-grid-name">{board.name}</div>
-                {board.has_promoted && <span className="badge-recommended">Recommended</span>}
+                {board.has_promoted && <span className="badge-recommended">{t('modal.promoted')}</span>}
               </div>
             </button>
           ))}
           {filteredBoards.length === 0 && (
             <div className="no-results">
-              <p>No boards found</p>
+              <p>{t('modal.noBoards')}</p>
             </div>
           )}
         </div>

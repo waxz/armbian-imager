@@ -1,0 +1,113 @@
+{
+  "home": {
+    "manufacturer": "Fabricant",
+    "board": "Carte",
+    "operatingSystem": "Système d'exploitation",
+    "storage": "Stockage",
+    "chooseBrand": "CHOISIR MARQUE",
+    "chooseBoard": "CHOISIR CARTE",
+    "chooseOs": "CHOISIR OS",
+    "chooseStorage": "CHOISIR STOCKAGE",
+    "useCustomImage": "Utiliser une image personnalisée",
+    "changeCustomImage": "Changer l'image personnalisée",
+    "images": "images",
+    "boards": "cartes"
+  },
+  "flash": {
+    "downloading": "Téléchargement de l'image...",
+    "decompressing": "Décompression de l'image...",
+    "writing": "Écriture de l'image sur le périphérique...",
+    "verifying": "Vérification des données écrites...",
+    "complete": "Flash terminé !",
+    "failed": "Une erreur s'est produite",
+    "cancelled": "Annulé",
+    "cancel": "Annuler",
+    "retry": "Réessayer",
+    "back": "Retour",
+    "done": "Terminé",
+    "flashAnother": "Flasher une autre",
+    "authorizing": "Demande d'autorisation...",
+    "authorizingDesc": "Veuillez approuver la demande d'autorisation pour continuer.",
+    "preparing": "Préparation...",
+    "confirmTitle": "Confirmer la sélection",
+    "confirmText": "Vous êtes sur le point d'écrire sur :",
+    "confirmWarning": "TOUTES LES DONNÉES SERONT DÉFINITIVEMENT EFFACÉES",
+    "eraseAndFlash": "Effacer et Flasher",
+    "dataWarning": "Toutes les données sur le périphérique sélectionné seront effacées",
+    "successHint": "Votre carte SD est prête ! Vous pouvez retirer le périphérique en toute sécurité et l'insérer dans votre {{boardName}}."
+  },
+  "modal": {
+    "selectManufacturer": "Sélectionner le fabricant",
+    "selectBoard": "Sélectionner la carte",
+    "selectImage": "Sélectionner le système d'exploitation",
+    "selectDevice": "Sélectionner le périphérique de stockage",
+    "searchManufacturer": "Rechercher un fabricant...",
+    "searchBoard": "Rechercher des cartes...",
+    "searchImage": "Rechercher des images...",
+    "close": "Fermer",
+    "noResults": "Aucun résultat trouvé",
+    "noManufacturers": "Aucun fabricant trouvé",
+    "noBoards": "Aucune carte trouvée",
+    "noImages": "Aucune image trouvée",
+    "noDevices": "Aucun périphérique trouvé",
+    "loading": "Chargement...",
+    "error": "Erreur de chargement des données",
+    "retry": "Réessayer",
+    "promoted": "Recommandé",
+    "stable": "Stable",
+    "nightly": "Nightly",
+    "apps": "Apps",
+    "minimal": "Minimal",
+    "allImages": "Toutes les images",
+    "scanningDevices": "Recherche de périphériques...",
+    "insertDevice": "Insérez une carte SD ou une clé USB",
+    "refreshDevices": "Actualiser les périphériques"
+  },
+  "device": {
+    "removable": "Amovible",
+    "system": "Système",
+    "sdCard": "Carte SD",
+    "usb": "USB",
+    "sata": "SATA",
+    "sas": "SAS",
+    "nvme": "NVMe",
+    "noDevices": "Aucun périphérique amovible trouvé",
+    "refreshing": "Actualisation...",
+    "refresh": "Actualiser"
+  },
+  "header": {
+    "title": "Armbian Imager",
+    "stepManufacturer": "Fabricant",
+    "stepBoard": "Carte",
+    "stepOs": "OS",
+    "stepStorage": "Stockage",
+    "stepImage": "Image"
+  },
+  "errorDisplay": {
+    "retry": "Réessayer",
+    "uploadLogs": "Téléverser les logs",
+    "uploading": "Téléversement...",
+    "uploadingLogs": "Téléversement des logs...",
+    "uploadLogsForSupport": "Téléverser les logs pour le support",
+    "viewLogs": "Voir les logs",
+    "scanQrOrShare": "Scannez le QR ou partagez ce lien :",
+    "uploadFailed": "Échec du téléversement"
+  },
+  "error": {
+    "downloadFailed": "Échec du téléchargement",
+    "flashFailed": "Échec du flash",
+    "verifyFailed": "Échec de la vérification",
+    "cancelled": "Opération annulée",
+    "authFailed": "Échec de l'autorisation",
+    "authCancelled": "Autorisation annulée par l'utilisateur",
+    "decompressionFailed": "Échec de la décompression",
+    "uploadFailed": "Échec du téléversement",
+    "deviceDisconnected": "Périphérique déconnecté"
+  },
+  "custom": {
+    "customImage": "Image personnalisée"
+  },
+  "common": {
+    "unknown": "Inconnu"
+  }
+}

@@ -1,0 +1,113 @@
+{
+  "home": {
+    "manufacturer": "Производитель",
+    "board": "Плата",
+    "operatingSystem": "Операционная система",
+    "storage": "Хранилище",
+    "chooseBrand": "ВЫБРАТЬ БРЕНД",
+    "chooseBoard": "ВЫБРАТЬ ПЛАТУ",
+    "chooseOs": "ВЫБРАТЬ ОС",
+    "chooseStorage": "ВЫБРАТЬ ХРАНИЛИЩЕ",
+    "useCustomImage": "Использовать свой образ",
+    "changeCustomImage": "Изменить свой образ",
+    "images": "образы",
+    "boards": "платы"
+  },
+  "flash": {
+    "downloading": "Загрузка образа...",
+    "decompressing": "Распаковка образа...",
+    "writing": "Запись образа на устройство...",
+    "verifying": "Проверка записанных данных...",
+    "complete": "Запись завершена!",
+    "failed": "Произошла ошибка",
+    "cancelled": "Отменено",
+    "cancel": "Отмена",
+    "retry": "Повторить",
+    "back": "Назад",
+    "done": "Готово",
+    "flashAnother": "Записать другой",
+    "authorizing": "Запрос авторизации...",
+    "authorizingDesc": "Пожалуйста, подтвердите запрос авторизации для продолжения.",
+    "preparing": "Подготовка...",
+    "confirmTitle": "Подтвердите выбор",
+    "confirmText": "Вы собираетесь записать на:",
+    "confirmWarning": "ВСЕ ДАННЫЕ БУДУТ БЕЗВОЗВРАТНО УДАЛЕНЫ",
+    "eraseAndFlash": "Стереть и записать",
+    "dataWarning": "Все данные на выбранном устройстве будут удалены",
+    "successHint": "Ваша SD-карта готова! Вы можете безопасно извлечь устройство и вставить его в {{boardName}}."
+  },
+  "modal": {
+    "selectManufacturer": "Выберите производителя",
+    "selectBoard": "Выберите плату",
+    "selectImage": "Выберите операционную систему",
+    "selectDevice": "Выберите устройство хранения",
+    "searchManufacturer": "Поиск производителя...",
+    "searchBoard": "Поиск плат...",
+    "searchImage": "Поиск образов...",
+    "close": "Закрыть",
+    "noResults": "Результаты не найдены",
+    "noManufacturers": "Производители не найдены",
+    "noBoards": "Платы не найдены",
+    "noImages": "Образы не найдены",
+    "noDevices": "Устройства не найдены",
+    "loading": "Загрузка...",
+    "error": "Ошибка загрузки данных",
+    "retry": "Повторить",
+    "promoted": "Рекомендуемые",
+    "stable": "Стабильная",
+    "nightly": "Nightly",
+    "apps": "Приложения",
+    "minimal": "Минимальная",
+    "allImages": "Все образы",
+    "scanningDevices": "Поиск устройств...",
+    "insertDevice": "Вставьте SD-карту или USB-накопитель",
+    "refreshDevices": "Обновить устройства"
+  },
+  "device": {
+    "removable": "Съёмный",
+    "system": "Системный",
+    "sdCard": "SD-карта",
+    "usb": "USB",
+    "sata": "SATA",
+    "sas": "SAS",
+    "nvme": "NVMe",
+    "noDevices": "Съёмные устройства не найдены",
+    "refreshing": "Обновление...",
+    "refresh": "Обновить"
+  },
+  "header": {
+    "title": "Armbian Imager",
+    "stepManufacturer": "Производитель",
+    "stepBoard": "Плата",
+    "stepOs": "ОС",
+    "stepStorage": "Хранилище",
+    "stepImage": "Образ"
+  },
+  "errorDisplay": {
+    "retry": "Повторить",
+    "uploadLogs": "Загрузить логи",
+    "uploading": "Загрузка...",
+    "uploadingLogs": "Загрузка логов...",
+    "uploadLogsForSupport": "Загрузить логи для поддержки",
+    "viewLogs": "Просмотр логов",
+    "scanQrOrShare": "Отсканируйте QR или поделитесь ссылкой:",
+    "uploadFailed": "Ошибка загрузки"
+  },
+  "error": {
+    "downloadFailed": "Ошибка загрузки",
+    "flashFailed": "Ошибка записи",
+    "verifyFailed": "Ошибка проверки",
+    "cancelled": "Операция отменена",
+    "authFailed": "Ошибка авторизации",
+    "authCancelled": "Авторизация отменена пользователем",
+    "decompressionFailed": "Ошибка распаковки",
+    "uploadFailed": "Ошибка загрузки",
+    "deviceDisconnected": "Устройство отключено"
+  },
+  "custom": {
+    "customImage": "Свой образ"
+  },
+  "common": {
+    "unknown": "Неизвестно"
+  }
+}

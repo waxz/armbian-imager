@@ -1,4 +1,5 @@
 import { Factory, Cpu, Database, HardDrive, FolderOpen } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import type { BoardInfo, ImageInfo, BlockDevice } from '../types';
 import type { Manufacturer } from './ManufacturerModal';
 
@@ -25,13 +26,14 @@ export function HomePage({
   onChooseDevice,
   onChooseCustomImage,
 }: HomePageProps) {
+  const { t } = useTranslation();
   const isCustomImage = selectedImage?.is_custom;
 
   return (
     <div className="home-page">
       <div className="home-buttons-inline">
         <div className="home-button-group">
-          <span className="home-button-label">Manufacturer</span>
+          <span className="home-button-label">{t('home.manufacturer')}</span>
           <button
             className={`home-button ${selectedManufacturer ? 'selected' : ''}`}
             onClick={onChooseManufacturer}
@@ -43,13 +45,13 @@ export function HomePage({
                 <span className="home-button-subtitle">&nbsp;</span>
               </span>
             ) : (
-              <span className="home-button-text">CHOOSE BRAND</span>
+              <span className="home-button-text">{t('home.chooseBrand')}</span>
             )}
           </button>
         </div>
 
         <div className="home-button-group">
-          <span className="home-button-label">Board</span>
+          <span className="home-button-label">{t('home.board')}</span>
           <button
             className={`home-button ${selectedBoard ? 'selected' : ''}`}
             onClick={onChooseBoard}
@@ -59,16 +61,16 @@ export function HomePage({
             {selectedBoard ? (
               <span className="home-button-text-multi">
                 <span className="home-button-title">{selectedBoard.name}</span>
-                <span className="home-button-subtitle">{selectedBoard.image_count} images</span>
+                <span className="home-button-subtitle">{selectedBoard.image_count} {t('home.images')}</span>
               </span>
             ) : (
-              <span className="home-button-text">CHOOSE BOARD</span>
+              <span className="home-button-text">{t('home.chooseBoard')}</span>
             )}
           </button>
         </div>
 
         <div className="home-button-group">
-          <span className="home-button-label">Operating System</span>
+          <span className="home-button-label">{t('home.operatingSystem')}</span>
           <button
             className={`home-button ${selectedImage ? 'selected' : ''}`}
             onClick={onChooseImage}
@@ -85,13 +87,13 @@ export function HomePage({
                 </span>
               </span>
             ) : (
-              <span className="home-button-text">CHOOSE OS</span>
+              <span className="home-button-text">{t('home.chooseOs')}</span>
             )}
           </button>
         </div>
 
         <div className="home-button-group">
-          <span className="home-button-label">Storage</span>
+          <span className="home-button-label">{t('home.storage')}</span>
           <button
             className={`home-button ${selectedDevice ? 'selected' : ''}`}
             onClick={onChooseDevice}
@@ -104,7 +106,7 @@ export function HomePage({
                 <span className="home-button-subtitle">{selectedDevice.size_formatted}</span>
               </span>
             ) : (
-              <span className="home-button-text">CHOOSE STORAGE</span>
+              <span className="home-button-text">{t('home.chooseStorage')}</span>
             )}
           </button>
         </div>
@@ -116,7 +118,7 @@ export function HomePage({
           onClick={onChooseCustomImage}
         >
           <FolderOpen size={16} />
-          {isCustomImage ? 'Change Custom Image' : 'Use Custom Image'}
+          {isCustomImage ? t('home.changeCustomImage') : t('home.useCustomImage')}
         </button>
       </div>
     </div>

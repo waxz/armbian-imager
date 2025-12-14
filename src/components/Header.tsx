@@ -1,4 +1,5 @@
 import { Check } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import armbianLogo from '../assets/armbian-logo.png';
 import type { BoardInfo, ImageInfo, BlockDevice } from '../types';
 import type { Manufacturer } from './ManufacturerModal';
@@ -16,19 +17,20 @@ export function Header({
   selectedImage,
   selectedDevice,
 }: HeaderProps) {
+  const { t } = useTranslation();
   const isCustomImage = selectedImage?.is_custom;
 
   // For custom images, show different steps
   const steps = isCustomImage
     ? [
-        { label: 'Image', completed: !!selectedImage },
-        { label: 'Storage', completed: !!selectedDevice },
+        { label: t('header.stepImage'), completed: !!selectedImage },
+        { label: t('header.stepStorage'), completed: !!selectedDevice },
       ]
     : [
-        { label: 'Manufacturer', completed: !!selectedManufacturer },
-        { label: 'Board', completed: !!selectedBoard },
-        { label: 'OS', completed: !!selectedImage },
-        { label: 'Storage', completed: !!selectedDevice },
+        { label: t('header.stepManufacturer'), completed: !!selectedManufacturer },
+        { label: t('header.stepBoard'), completed: !!selectedBoard },
+        { label: t('header.stepOs'), completed: !!selectedImage },
+        { label: t('header.stepStorage'), completed: !!selectedDevice },
       ];
 
   return (

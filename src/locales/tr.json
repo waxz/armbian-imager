@@ -1,0 +1,113 @@
+{
+  "home": {
+    "manufacturer": "Üretici",
+    "board": "Kart",
+    "operatingSystem": "İşletim Sistemi",
+    "storage": "Depolama",
+    "chooseBrand": "MARKA SEÇ",
+    "chooseBoard": "KART SEÇ",
+    "chooseOs": "İS SEÇ",
+    "chooseStorage": "DEPOLAMA SEÇ",
+    "useCustomImage": "Özel imaj kullan",
+    "changeCustomImage": "Özel imajı değiştir",
+    "images": "imaj",
+    "boards": "kart"
+  },
+  "flash": {
+    "downloading": "İmaj indiriliyor...",
+    "decompressing": "İmaj açılıyor...",
+    "writing": "İmaj cihaza yazılıyor...",
+    "verifying": "Yazılan veriler doğrulanıyor...",
+    "complete": "Yazma tamamlandı!",
+    "failed": "Bir hata oluştu",
+    "cancelled": "İptal edildi",
+    "cancel": "İptal",
+    "retry": "Yeniden dene",
+    "back": "Geri",
+    "done": "Tamam",
+    "flashAnother": "Başka bir tane yaz",
+    "authorizing": "Yetkilendirme isteniyor...",
+    "authorizingDesc": "Devam etmek için lütfen yetkilendirme isteğini onaylayın.",
+    "preparing": "Hazırlanıyor...",
+    "confirmTitle": "Seçimi Onayla",
+    "confirmText": "Şu cihaza yazmak üzeresiniz:",
+    "confirmWarning": "TÜM VERİLER KALICI OLARAK SİLİNECEK",
+    "eraseAndFlash": "Sil ve Yaz",
+    "dataWarning": "Seçili cihazdaki tüm veriler silinecek",
+    "successHint": "SD kartınız hazır! Cihazı güvenle çıkarabilir ve {{boardName}} cihazınıza takabilirsiniz."
+  },
+  "modal": {
+    "selectManufacturer": "Üretici Seç",
+    "selectBoard": "Kart Seç",
+    "selectImage": "İşletim Sistemi Seç",
+    "selectDevice": "Depolama Cihazı Seç",
+    "searchManufacturer": "Üretici ara...",
+    "searchBoard": "Kart ara...",
+    "searchImage": "İmaj ara...",
+    "close": "Kapat",
+    "noResults": "Sonuç bulunamadı",
+    "noManufacturers": "Üretici bulunamadı",
+    "noBoards": "Kart bulunamadı",
+    "noImages": "İmaj bulunamadı",
+    "noDevices": "Cihaz bulunamadı",
+    "loading": "Yükleniyor...",
+    "error": "Veri yükleme hatası",
+    "retry": "Yeniden dene",
+    "promoted": "Önerilen",
+    "stable": "Kararlı",
+    "nightly": "Nightly",
+    "apps": "Uygulamalar",
+    "minimal": "Minimal",
+    "allImages": "Tüm İmajlar",
+    "scanningDevices": "Cihazlar taranıyor...",
+    "insertDevice": "Bir SD kart veya USB sürücü takın",
+    "refreshDevices": "Cihazları Yenile"
+  },
+  "device": {
+    "removable": "Çıkarılabilir",
+    "system": "Sistem",
+    "sdCard": "SD Kart",
+    "usb": "USB",
+    "sata": "SATA",
+    "sas": "SAS",
+    "nvme": "NVMe",
+    "noDevices": "Çıkarılabilir cihaz bulunamadı",
+    "refreshing": "Yenileniyor...",
+    "refresh": "Yenile"
+  },
+  "header": {
+    "title": "Armbian Imager",
+    "stepManufacturer": "Üretici",
+    "stepBoard": "Kart",
+    "stepOs": "İS",
+    "stepStorage": "Depolama",
+    "stepImage": "İmaj"
+  },
+  "errorDisplay": {
+    "retry": "Yeniden dene",
+    "uploadLogs": "Günlükleri Yükle",
+    "uploading": "Yükleniyor...",
+    "uploadingLogs": "Günlükler yükleniyor...",
+    "uploadLogsForSupport": "Destek için günlükleri yükle",
+    "viewLogs": "Günlükleri Görüntüle",
+    "scanQrOrShare": "QR tarayın veya bu bağlantıyı paylaşın:",
+    "uploadFailed": "Yükleme başarısız"
+  },
+  "error": {
+    "downloadFailed": "İndirme başarısız",
+    "flashFailed": "Yazma başarısız",
+    "verifyFailed": "Doğrulama başarısız",
+    "cancelled": "İşlem iptal edildi",
+    "authFailed": "Yetkilendirme başarısız",
+    "authCancelled": "Yetkilendirme kullanıcı tarafından iptal edildi",
+    "decompressionFailed": "Açma başarısız",
+    "uploadFailed": "Yükleme başarısız",
+    "deviceDisconnected": "Cihaz bağlantısı kesildi"
+  },
+  "custom": {
+    "customImage": "Özel İmaj"
+  },
+  "common": {
+    "unknown": "Bilinmeyen"
+  }
+}

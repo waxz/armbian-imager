@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
 import { Search } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { Modal } from './Modal';
 import { ErrorDisplay } from './shared/ErrorDisplay';
 import type { BoardInfo, Manufacturer } from '../types';
@@ -29,6 +30,7 @@ interface ManufacturerModalProps {
 }
 
 export function ManufacturerModal({ isOpen, onClose, onSelect }: ManufacturerModalProps) {
+  const { t } = useTranslation();
   const [search, setSearch] = useState('');
 
   // Use hook for async data fetching - only fetch when modal opens and no data yet
@@ -76,7 +78,7 @@ export function ManufacturerModal({ isOpen, onClose, onSelect }: ManufacturerMod
         <Search className="search-icon" size={18} />
         <input
           type="text"
-          placeholder="Search manufacturer..."
+          placeholder={t('modal.searchManufacturer')}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="search-input"
@@ -87,11 +89,11 @@ export function ManufacturerModal({ isOpen, onClose, onSelect }: ManufacturerMod
   );
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Select Manufacturer" searchBar={searchBarContent}>
+    <Modal isOpen={isOpen} onClose={onClose} title={t('modal.selectManufacturer')} searchBar={searchBarContent}>
       {loading ? (
         <div className="loading">
           <div className="spinner" />
-          <p>Loading...</p>
+          <p>{t('modal.loading')}</p>
         </div>
       ) : error ? (
         <ErrorDisplay error={error} onRetry={reload} compact />
@@ -108,14 +110,14 @@ export function ManufacturerModal({ isOpen, onClose, onSelect }: ManufacturerMod
                 <ManufacturerIcon config={config} />
                 <div className="list-item-content">
                   <div className="list-item-title">{mfr.name}</div>
-                  <div className="list-item-subtitle">{mfr.boardCount} boards</div>
+                  <div className="list-item-subtitle">{mfr.boardCount} {t('home.boards')}</div>
                 </div>
               </button>
             );
           })}
           {manufacturers.length === 0 && (
             <div className="no-results">
-              <p>No manufacturers found</p>
+              <p>{t('modal.noManufacturers')}</p>
             </div>
           )}
         </div>

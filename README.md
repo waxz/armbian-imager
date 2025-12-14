@@ -37,7 +37,7 @@ Getting started with single-board computers shouldn't be complicated. Yet, for y
 
 **Armbian Imager changes everything.**
 
-We built this tool because the Armbian community deserves a first-class experience. With 185+ supported boards from 70+ manufacturers, finding and flashing the right image should be effortless—and now it is.
+We built this tool because the Armbian community deserves a first-class experience. With 307+ supported boards from 70+ manufacturers, finding and flashing the right image should be effortless—and now it is.
 
 ### The Vision
 
@@ -52,13 +52,16 @@ Inspired by the simplicity of [Raspberry Pi Imager](https://github.com/raspberry
 
 | Feature | Description |
 |---------|-------------|
-| **185+ Boards** | Browse every Armbian-supported SBC, organized by manufacturer |
-| **Smart Filtering** | Filter by stable/nightly, desktop/server, kernel variant |
+| **307+ Boards** | Browse every Armbian-supported SBC, organized by manufacturer |
+| **Smart Filtering** | Filter by stable/nightly, desktop/server/minimal, kernel variant, apps |
 | **Safe by Design** | System disks are automatically excluded—no accidents |
-| **Verified Writes** | Read-back verification ensures your flash is perfect |
-| **Custom Images** | Use your own `.img` or `.img.xz` files |
+| **Verified Writes** | SHA256 read-back verification ensures your flash is perfect |
+| **Custom Images** | Use your own `.img`, `.img.xz`, `.img.gz`, `.img.bz2`, `.img.zst` files |
 | **Touch ID** | Authenticate with biometrics on macOS |
+| **14 Languages** | Auto-detects system language (EN, IT, DE, FR, ES, PT, NL, PL, RU, ZH, JA, KO, UK, TR) |
 | **Light/Dark Mode** | Follows your system preference |
+| **Device Hot-Swap** | Automatically detects when devices are connected/disconnected |
+| **Log Upload** | One-click error log upload to paste.armbian.com with QR code |
 | **Tiny Footprint** | ~15MB app size vs 200MB+ for Electron alternatives |
 
 ## Download
@@ -109,7 +112,9 @@ Built with modern technologies for optimal performance:
 | **Bundler** | Vite 7 | Lightning-fast HMR and builds |
 | **Framework** | Tauri 2 | Native performance, tiny bundle |
 | **Backend** | Rust | Memory-safe, blazing fast I/O |
-| **Async** | Tokio | Efficient concurrent downloads |
+| **Async** | Tokio | Efficient concurrent operations |
+| **i18n** | i18next + react-i18next | 14 language translations |
+| **Icons** | Lucide React | Modern, consistent icon set |
 
 ### Why Tauri over Electron?
 
@@ -128,8 +133,22 @@ Built with modern technologies for optimal performance:
 | macOS | Apple Silicon | ✅ | Native ARM64 + Touch ID |
 | Windows | x64 | ✅ | Admin elevation via UAC |
 | Windows | ARM64 | ✅ | Native ARM64 build |
-| Linux | x64 | ✅ | pkexec for privileges |
+| Linux | x64 | ✅ | UDisks2 + pkexec for privileges |
 | Linux | ARM64 | ✅ | Native ARM64 build |
+
+### Supported Languages
+
+The app automatically detects your system language:
+
+| Language | Code | Language | Code |
+|----------|------|----------|------|
+| English | `en` | Russian | `ru` |
+| Italian | `it` | Chinese (Simplified) | `zh` |
+| German | `de` | Japanese | `ja` |
+| French | `fr` | Korean | `ko` |
+| Spanish | `es` | Ukrainian | `uk` |
+| Portuguese | `pt` | Turkish | `tr` |
+| Dutch | `nl` | Polish | `pl` |
 
 ## Development
 
@@ -192,26 +211,37 @@ armbian-imager/
 │   │   ├── HomePage.tsx          # Main wizard interface
 │   │   ├── ManufacturerModal.tsx # Manufacturer selection
 │   │   ├── BoardModal.tsx        # Board selection
-│   │   ├── ImageModal.tsx        # Image selection
-│   │   ├── DeviceModal.tsx       # Device selection
-│   │   └── FlashProgress/        # Flash operation UI
-│   ├── hooks/                    # React Hooks
-│   ├── config/                   # Configuration
+│   │   ├── ImageModal.tsx        # Image selection with filters
+│   │   ├── DeviceModal.tsx       # Device selection with confirmation
+│   │   ├── FlashProgress/        # Flash operation UI
+│   │   └── shared/               # Shared components (ErrorDisplay)
+│   ├── hooks/                    # React Hooks (useTauri, useAsyncData, useDeviceMonitor)
+│   ├── config/                   # Configuration (manufacturers, badges, OS info)
+│   ├── locales/                  # i18n translations (14 languages)
 │   ├── styles/                   # Modular CSS
-│   └── assets/                   # Images and logos
+│   ├── types/                    # TypeScript interfaces
+│   ├── assets/                   # Images, logos, OS icons
+│   ├── i18n.ts                   # i18n initialization
+│   └── App.tsx                   # Root component with state management
 │
 ├── src-tauri/                    # Rust Backend
 │   ├── src/
 │   │   ├── commands/             # Tauri IPC handlers
-│   │   ├── devices/              # Platform device detection
+│   │   ├── devices/              # Platform device detection (macOS, Linux, Windows)
 │   │   ├── flash/                # Platform flash implementation
-│   │   ├── images/               # Image management
+│   │   │   ├── macos/            # macOS writer + Touch ID auth
+│   │   │   ├── linux/            # Linux writer + pkexec/UDisks2
+│   │   │   └── windows.rs        # Windows writer
+│   │   ├── images/               # Image management and filtering
+│   │   ├── download.rs           # HTTP streaming downloads
+│   │   ├── decompress.rs         # XZ/GZ/BZ2/ZST decompression
+│   │   ├── paste/                # Log upload to paste.armbian.com
 │   │   └── utils/                # Utilities
-│   ├── icons/                    # App icons
+│   ├── icons/                    # App icons (all platforms)
 │   └── tauri.conf.json           # Tauri configuration
 │
-├── scripts/                      # Build scripts
-└── .github/workflows/            # CI/CD
+├── scripts/                      # Build scripts (macOS, Linux, all platforms)
+└── .github/workflows/            # CI/CD (multi-platform builds)
 ```
 
 </details>
@@ -221,8 +251,9 @@ armbian-imager/
 | Data | Source |
 |------|--------|
 | Board List | [github.armbian.com/all-images.json](https://github.armbian.com/all-images.json) |
-| Board Photos | Scraped from [armbian.com](https://www.armbian.com) board pages |
-| Checksums | Embedded in image metadata |
+| Board Photos | [cache.armbian.com/images/{size}/{slug}.png](https://cache.armbian.com) |
+| Checksums | Embedded in image metadata (SHA256) |
+| Log Upload | [paste.armbian.com](https://paste.armbian.com) |
 
 ## Contributing
 
@@ -231,6 +262,7 @@ We welcome contributions! Whether it's:
 - 🐛 **Bug reports** — Found an issue? [Open a ticket](https://github.com/armbian/armbian-imager/issues)
 - 💡 **Feature requests** — Have an idea? Let's discuss it
 - 🔧 **Pull requests** — Code improvements are always welcome
+- 🌍 **Translations** — Add or improve translations in `src/locales/`
 - 📖 **Documentation** — Help others get started
 
 ### Development Workflow

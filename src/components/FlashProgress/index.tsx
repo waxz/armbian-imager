@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { HardDrive, Disc, FileImage } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import type { BoardInfo, ImageInfo, BlockDevice } from '../../types';
 import { getImageLogo, getOsName } from '../../assets/os-logos';
 import {
@@ -14,7 +15,7 @@ import {
   checkNeedsDecompression,
   decompressCustomImage,
 } from '../../hooks/useTauri';
-import { FlashStageIcon, getStageText } from './FlashStageIcon';
+import { FlashStageIcon, getStageKey } from './FlashStageIcon';
 import { FlashActions } from './FlashActions';
 import { ErrorDisplay } from '../shared/ErrorDisplay';
 import type { FlashStage } from './FlashStageIcon';
@@ -35,6 +36,7 @@ export function FlashProgress({
   onComplete,
   onBack,
 }: FlashProgressProps) {
+  const { t } = useTranslation();
   const [stage, setStage] = useState<FlashStage>('authorizing');
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
@@ -89,7 +91,7 @@ export function FlashProgress({
       // The app will restart elevated and the user will need to re-select options
       const authorized = await requestWriteAuthorization(device.path);
       if (!authorized) {
-        setError('Authorization cancelled by user');
+        setError(t('error.authCancelled'));
         setStage('error');
         return;
       }
@@ -100,7 +102,7 @@ export function FlashProgress({
         startDownload();
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Authorization failed');
+      setError(err instanceof Error ? err.message : t('error.authFailed'));
       setStage('error');
     }
   }
@@ -120,7 +122,7 @@ export function FlashProgress({
         startFlash(customPath);
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Decompression failed');
+      setError(err instanceof Error ? err.message : t('error.decompressionFailed'));
       setStage('error');
     }
   }
@@ -166,7 +168,7 @@ export function FlashProgress({
       startFlash(path);
     } catch (err) {
       if (intervalRef.current) clearInterval(intervalRef.current);
-      setError(err instanceof Error ? err.message : 'Download failed');
+      setError(err instanceof Error ? err.message : t('error.downloadFailed'));
       setStage('error');
     }
   }
@@ -206,7 +208,7 @@ export function FlashProgress({
       setProgress(100);
     } catch (err) {
       if (intervalRef.current) clearInterval(intervalRef.current);
-      setError(err instanceof Error ? err.message : 'Flash failed');
+      setError(err instanceof Error ? err.message : t('error.flashFailed'));
       setStage('error');
     }
   }
@@ -310,7 +312,7 @@ export function FlashProgress({
 
       <div className={`flash-status ${stage}`}>
         <FlashStageIcon stage={stage} />
-        <h3>{getStageText(stage)}</h3>
+        <h3>{t(getStageKey(stage))}</h3>
 
         {stage !== 'complete' &&
           stage !== 'error' &&
@@ -334,8 +336,7 @@ export function FlashProgress({
 
         {stage === 'complete' && (
           <p className="flash-success-hint">
-            Your SD card is ready! You can safely remove the device and insert
-            it into your {board.name}.
+            {t('flash.successHint', { boardName: board.name })}
           </p>
         )}
 

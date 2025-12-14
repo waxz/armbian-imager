@@ -74,6 +74,7 @@ fn main() {
             commands::custom_image::check_needs_decompression,
             commands::custom_image::decompress_custom_image,
             commands::system::open_url,
+            commands::system::get_system_locale,
             paste::upload::upload_logs,
         ])
         .setup(|app| {

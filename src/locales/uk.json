@@ -1,0 +1,113 @@
+{
+  "home": {
+    "manufacturer": "Виробник",
+    "board": "Плата",
+    "operatingSystem": "Операційна система",
+    "storage": "Сховище",
+    "chooseBrand": "ОБРАТИ БРЕНД",
+    "chooseBoard": "ОБРАТИ ПЛАТУ",
+    "chooseOs": "ОБРАТИ ОС",
+    "chooseStorage": "ОБРАТИ СХОВИЩЕ",
+    "useCustomImage": "Використати власний образ",
+    "changeCustomImage": "Змінити власний образ",
+    "images": "образи",
+    "boards": "плати"
+  },
+  "flash": {
+    "downloading": "Завантаження образу...",
+    "decompressing": "Розпакування образу...",
+    "writing": "Запис образу на пристрій...",
+    "verifying": "Перевірка записаних даних...",
+    "complete": "Запис завершено!",
+    "failed": "Сталася помилка",
+    "cancelled": "Скасовано",
+    "cancel": "Скасувати",
+    "retry": "Повторити",
+    "back": "Назад",
+    "done": "Готово",
+    "flashAnother": "Записати інший",
+    "authorizing": "Запит авторизації...",
+    "authorizingDesc": "Будь ласка, підтвердіть запит авторизації для продовження.",
+    "preparing": "Підготовка...",
+    "confirmTitle": "Підтвердіть вибір",
+    "confirmText": "Ви збираєтесь записати на:",
+    "confirmWarning": "УСІ ДАНІ БУДУТЬ БЕЗПОВОРОТНО ВИДАЛЕНІ",
+    "eraseAndFlash": "Стерти та записати",
+    "dataWarning": "Усі дані на вибраному пристрої будуть видалені",
+    "successHint": "Ваша SD-картка готова! Ви можете безпечно вилучити пристрій та вставити його у {{boardName}}."
+  },
+  "modal": {
+    "selectManufacturer": "Оберіть виробника",
+    "selectBoard": "Оберіть плату",
+    "selectImage": "Оберіть операційну систему",
+    "selectDevice": "Оберіть пристрій зберігання",
+    "searchManufacturer": "Пошук виробника...",
+    "searchBoard": "Пошук плат...",
+    "searchImage": "Пошук образів...",
+    "close": "Закрити",
+    "noResults": "Результати не знайдено",
+    "noManufacturers": "Виробників не знайдено",
+    "noBoards": "Плат не знайдено",
+    "noImages": "Образів не знайдено",
+    "noDevices": "Пристроїв не знайдено",
+    "loading": "Завантаження...",
+    "error": "Помилка завантаження даних",
+    "retry": "Повторити",
+    "promoted": "Рекомендовані",
+    "stable": "Стабільна",
+    "nightly": "Nightly",
+    "apps": "Додатки",
+    "minimal": "Мінімальна",
+    "allImages": "Усі образи",
+    "scanningDevices": "Пошук пристроїв...",
+    "insertDevice": "Вставте SD-картку або USB-накопичувач",
+    "refreshDevices": "Оновити пристрої"
+  },
+  "device": {
+    "removable": "Знімний",
+    "system": "Системний",
+    "sdCard": "SD-картка",
+    "usb": "USB",
+    "sata": "SATA",
+    "sas": "SAS",
+    "nvme": "NVMe",
+    "noDevices": "Знімних пристроїв не знайдено",
+    "refreshing": "Оновлення...",
+    "refresh": "Оновити"
+  },
+  "header": {
+    "title": "Armbian Imager",
+    "stepManufacturer": "Виробник",
+    "stepBoard": "Плата",
+    "stepOs": "ОС",
+    "stepStorage": "Сховище",
+    "stepImage": "Образ"
+  },
+  "errorDisplay": {
+    "retry": "Повторити",
+    "uploadLogs": "Завантажити логи",
+    "uploading": "Завантаження...",
+    "uploadingLogs": "Завантаження логів...",
+    "uploadLogsForSupport": "Завантажити логи для підтримки",
+    "viewLogs": "Переглянути логи",
+    "scanQrOrShare": "Відскануйте QR або поділіться посиланням:",
+    "uploadFailed": "Помилка завантаження"
+  },
+  "error": {
+    "downloadFailed": "Помилка завантаження",
+    "flashFailed": "Помилка запису",
+    "verifyFailed": "Помилка перевірки",
+    "cancelled": "Операцію скасовано",
+    "authFailed": "Помилка авторизації",
+    "authCancelled": "Авторизацію скасовано користувачем",
+    "decompressionFailed": "Помилка розпакування",
+    "uploadFailed": "Помилка завантаження",
+    "deviceDisconnected": "Пристрій відключено"
+  },
+  "custom": {
+    "customImage": "Власний образ"
+  },
+  "common": {
+    "unknown": "Невідомо"
+  }
+}

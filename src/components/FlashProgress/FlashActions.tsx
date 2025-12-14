@@ -1,4 +1,5 @@
 import { RotateCcw } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import type { FlashStage } from './FlashStageIcon';
 
 interface FlashActionsProps {
@@ -16,14 +17,16 @@ export function FlashActions({
   onRetry,
   onCancel,
 }: FlashActionsProps) {
+  const { t } = useTranslation();
+
   if (stage === 'complete') {
     return (
       <div className="flash-actions-inline">
         <button className="btn btn-secondary" onClick={onBack}>
-          Flash Another
+          {t('flash.flashAnother')}
         </button>
         <button className="btn btn-primary" onClick={onComplete}>
-          Done
+          {t('flash.done')}
         </button>
       </div>
     );
@@ -33,11 +36,11 @@ export function FlashActions({
     return (
       <div className="flash-actions-inline">
         <button className="btn btn-secondary" onClick={onBack}>
-          Cancel
+          {t('flash.cancel')}
         </button>
         <button className="btn btn-primary" onClick={onRetry}>
           <RotateCcw size={16} />
-          Retry
+          {t('flash.retry')}
         </button>
       </div>
     );
@@ -46,7 +49,7 @@ export function FlashActions({
   return (
     <div className="flash-actions-inline">
       <button className="btn btn-secondary" onClick={onCancel}>
-        Cancel
+        {t('flash.cancel')}
       </button>
     </div>
   );

@@ -41,21 +41,21 @@ export function FlashStageIcon({ stage, size = 32 }: FlashStageIconProps) {
   }
 }
 
-export function getStageText(stage: FlashStage): string {
+export function getStageKey(stage: FlashStage): string {
   switch (stage) {
     case 'authorizing':
-      return 'Requesting authorization...';
+      return 'flash.authorizing';
     case 'downloading':
-      return 'Downloading image...';
+      return 'flash.downloading';
     case 'decompressing':
-      return 'Decompressing image...';
+      return 'flash.decompressing';
     case 'flashing':
-      return 'Writing image to device...';
+      return 'flash.writing';
     case 'verifying':
-      return 'Verifying written data...';
+      return 'flash.verifying';
     case 'complete':
-      return 'Flash complete!';
+      return 'flash.complete';
     case 'error':
-      return 'An error occurred';
+      return 'flash.failed';
   }
 }

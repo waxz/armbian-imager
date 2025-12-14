@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Header } from './components/Header';
 import { HomePage } from './components/HomePage';
 import { ManufacturerModal, type Manufacturer } from './components/ManufacturerModal';
@@ -15,6 +16,7 @@ import './styles/index.css';
 type SelectionStep = 'manufacturer' | 'board' | 'image' | 'device';
 
 function App() {
+  const { t } = useTranslation();
   const [isFlashing, setIsFlashing] = useState(false);
   const [activeModal, setActiveModal] = useState<ModalType>('none');
   const [selectedManufacturer, setSelectedManufacturer] = useState<Manufacturer | null>(null);
@@ -90,7 +92,7 @@ function App() {
         resetSelectionsFrom('manufacturer');
         setSelectedBoard({
           slug: 'custom',
-          name: 'Custom Image',
+          name: t('custom.customImage'),
           image_count: 1,
           has_promoted: false,
         });
