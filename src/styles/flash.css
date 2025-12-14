@@ -34,6 +34,16 @@
   transform: scale(2);
 }
 
+.flash-custom-image-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  color: var(--text-secondary);
+  transform: none;
+}
+
 .flash-info {
   display: flex;
   flex-direction: column;
@@ -87,6 +97,13 @@
   height: 20px;
   object-fit: contain;
   flex-shrink: 0;
+}
+
+.os-badge-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  color: var(--text-secondary);
 }
 
 .os-badge-text {

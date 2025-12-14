@@ -27,10 +27,11 @@ const ubuntuCodenames = ['jammy', 'noble', 'focal', 'kinetic', 'lunar', 'mantic'
 
 /**
  * Get the appropriate logo for an image based on distro release and preinstalled app
- * Priority: preinstalled app logo > OS logo based on distro > Armbian default
+ * Priority: preinstalled app logo > OS logo based on distro > null (for generic icon)
  * For custom images, also checks the filename for OS/app keywords
+ * Returns null if no matching logo found (caller should show generic icon)
  */
-export function getImageLogo(distroRelease: string, preinstalledApp?: string): string {
+export function getImageLogo(distroRelease: string, preinstalledApp?: string, isCustom?: boolean): string | null {
   // First check if there's a preinstalled app with a logo
   if (preinstalledApp) {
     const appKey = preinstalledApp.toLowerCase();
@@ -61,7 +62,17 @@ export function getImageLogo(distroRelease: string, preinstalledApp?: string): s
     return osLogos.debian;
   }
 
-  // Default to Armbian
+  // Check for Armbian in name
+  if (distro.includes('armbian')) {
+    return osLogos.armbian;
+  }
+
+  // For custom images without recognized OS, return null (show generic icon)
+  if (isCustom) {
+    return null;
+  }
+
+  // Default to Armbian for non-custom images
   return osLogos.armbian;
 }
 

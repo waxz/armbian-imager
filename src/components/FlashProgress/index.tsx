@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { HardDrive } from 'lucide-react';
+import { HardDrive, Disc, FileImage } from 'lucide-react';
 import type { BoardInfo, ImageInfo, BlockDevice } from '../../types';
 import { getImageLogo, getOsName } from '../../assets/os-logos';
 import {
@@ -260,11 +260,17 @@ export function FlashProgress({
     <div className={`flash-container ${!showHeader ? 'centered' : ''}`}>
       {showHeader && (
         <div className="flash-header">
-          <img
-            src={boardImageUrl || fallbackImage}
-            alt={board.name}
-            className="flash-board-image"
-          />
+          {image.is_custom ? (
+            <div className="flash-board-image flash-custom-image-icon">
+              <FileImage size={40} />
+            </div>
+          ) : (
+            <img
+              src={boardImageUrl || fallbackImage}
+              alt={board.name}
+              className="flash-board-image"
+            />
+          )}
           <div className="flash-info">
             <h2>{board.name}</h2>
             <div className="flash-info-badges">
@@ -272,14 +278,22 @@ export function FlashProgress({
                 className="os-badge"
                 title={image.is_custom ? image.distro_release : undefined}
               >
-                <img
-                  src={getImageLogo(
+                {(() => {
+                  const logo = getImageLogo(
                     image.distro_release,
-                    image.preinstalled_application
-                  )}
-                  alt={getOsName(image.distro_release)}
-                  className="os-badge-logo"
-                />
+                    image.preinstalled_application,
+                    image.is_custom
+                  );
+                  return logo ? (
+                    <img
+                      src={logo}
+                      alt={getOsName(image.distro_release)}
+                      className="os-badge-logo"
+                    />
+                  ) : (
+                    <Disc size={20} className="os-badge-icon" />
+                  );
+                })()}
                 <span className="os-badge-text">{getImageDisplayText()}</span>
               </div>
               <div className="flash-device-row">
