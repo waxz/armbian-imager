@@ -9,8 +9,8 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/armbian/armbian-imager/releases"><img src="https://img.shields.io/github/v/release/armbian/armbian-imager?style=for-the-badge&color=orange" alt="Release"></a>
-  <a href="https://github.com/armbian/armbian-imager/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-GPLv2-blue?style=for-the-badge" alt="License"></a>
+  <a href="https://github.com/armbian/imager/releases"><img src="https://img.shields.io/github/v/release/armbian/imager?style=for-the-badge&color=orange" alt="Release"></a>
+  <a href="https://github.com/armbian/imager/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-GPLv2-blue?style=for-the-badge" alt="License"></a>
 </p>
 
 <p align="center">
@@ -42,7 +42,7 @@
 | <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/apple.svg" width="40"> | <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/windows11.svg" width="40"> | <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/linux.svg" width="40"> |
 |:---:|:---:|:---:|
 | **macOS** | **Windows** | **Linux** |
-| [Intel & Apple Silicon](https://github.com/armbian/armbian-imager/releases) | [x64 & ARM64](https://github.com/armbian/armbian-imager/releases) | [x64 & ARM64](https://github.com/armbian/armbian-imager/releases) |
+| [Intel & Apple Silicon](https://github.com/armbian/imager/releases) | [x64 & ARM64](https://github.com/armbian/imager/releases) | [x64 & ARM64](https://github.com/armbian/imager/releases) |
 | `.dmg` | `.exe` / `.msi` | `.deb` |
 
 </p>
@@ -185,7 +185,7 @@ armbian-imager/
 
 We welcome contributions!
 
-- **Bug reports** — [Open an issue](https://github.com/armbian/armbian-imager/issues)
+- **Bug reports** — [Open an issue](https://github.com/armbian/imager/issues)
 - **Feature requests** — Let's discuss it
 - **Pull requests** — Code improvements are always welcome
 - **Translations** — Add or improve in `src/locales/`
