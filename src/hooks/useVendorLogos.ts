@@ -82,6 +82,8 @@ export interface ManufacturerData {
   name: string;
   logo: string | null;
   boardCount: number;
+  platinumCount: number;
+  standardCount: number;
 }
 
 /**
@@ -99,8 +101,15 @@ export function useManufacturerList(
     if (!boards || !isLoaded) return [];
 
     const searchLower = searchFilter.toLowerCase();
-    const vendorMap: Record<string, { name: string; logo: string | null; count: number }> = {};
+    const vendorMap: Record<string, {
+      name: string;
+      logo: string | null;
+      count: number;
+      platinumCount: number;
+      standardCount: number;
+    }> = {};
 
+    // Build vendor map with board counts, platinum board counts, and standard board counts
     for (const board of boards) {
       const validLogo = hasValidLogo(board);
       const vendorId = validLogo ? (board.vendor || 'other') : 'other';
@@ -112,9 +121,21 @@ export function useManufacturerList(
           name: vendorName,
           logo: vendorLogo,
           count: 0,
+          platinumCount: 0,
+          standardCount: 0,
         };
       }
       vendorMap[vendorId].count++;
+
+      // Increment platinum count if this board has platinum support
+      if (board.has_platinum_support) {
+        vendorMap[vendorId].platinumCount++;
+      }
+
+      // Increment standard count if this board has standard support
+      if (board.has_standard_support) {
+        vendorMap[vendorId].standardCount++;
+      }
     }
 
     const result: ManufacturerData[] = Object.entries(vendorMap)
@@ -127,10 +148,47 @@ export function useManufacturerList(
         name: data.name,
         logo: data.logo,
         boardCount: data.count,
+        platinumCount: data.platinumCount,
+        standardCount: data.standardCount,
       }))
       .sort((a, b) => {
+        // "Other" category always goes to the bottom
         if (a.id === 'other') return 1;
         if (b.id === 'other') return -1;
+
+        // Priority Tier 1: Vendors with MORE than 1 platinum board go to the top
+        const aPlatinumPriority = a.platinumCount > 1;
+        const bPlatinumPriority = b.platinumCount > 1;
+
+        if (aPlatinumPriority && !bPlatinumPriority) return -1;
+        if (!aPlatinumPriority && bPlatinumPriority) return 1;
+
+        // Within Tier 1, sort by platinum count (descending)
+        if (aPlatinumPriority && bPlatinumPriority) {
+          if (a.platinumCount !== b.platinumCount) {
+            return b.platinumCount - a.platinumCount;
+          }
+          // If platinum counts are equal, sort by total board count (descending)
+          return b.boardCount - a.boardCount;
+        }
+
+        // Priority Tier 2: Vendors with MORE than 1 standard board (but not in Tier 1)
+        const aStandardPriority = a.standardCount > 1;
+        const bStandardPriority = b.standardCount > 1;
+
+        if (aStandardPriority && !bStandardPriority) return -1;
+        if (!aStandardPriority && bStandardPriority) return 1;
+
+        // Within Tier 2, sort by standard count (descending)
+        if (aStandardPriority && bStandardPriority) {
+          if (a.standardCount !== b.standardCount) {
+            return b.standardCount - a.standardCount;
+          }
+          // If standard counts are equal, sort by total board count (descending)
+          return b.boardCount - a.boardCount;
+        }
+
+        // Tier 3: Remaining vendors - sort by total board count (descending)
         return b.boardCount - a.boardCount;
       });
 
