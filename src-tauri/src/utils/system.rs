@@ -22,12 +22,7 @@ pub fn get_recommended_threads() -> usize {
 pub fn find_binary(name: &str) -> Option<PathBuf> {
     let paths = get_binary_search_paths(name);
 
-    for path in paths {
-        if path.exists() {
-            return Some(path);
-        }
-    }
-    None
+    paths.into_iter().find(|path| path.exists())
 }
 
 /// Get platform-specific search paths for a binary
@@ -35,8 +30,8 @@ fn get_binary_search_paths(name: &str) -> Vec<PathBuf> {
     #[cfg(target_os = "macos")]
     {
         vec![
-            PathBuf::from(format!("/opt/homebrew/bin/{}", name)),  // macOS ARM
-            PathBuf::from(format!("/usr/local/bin/{}", name)),     // macOS Intel
+            PathBuf::from(format!("/opt/homebrew/bin/{}", name)), // macOS ARM
+            PathBuf::from(format!("/usr/local/bin/{}", name)),    // macOS Intel
             PathBuf::from(format!("/usr/bin/{}", name)),
         ]
     }
@@ -84,7 +79,7 @@ pub fn get_cache_dir(app_name: &str) -> PathBuf {
     }
 
     dirs::cache_dir()
-        .or_else(|| dirs::data_local_dir())
+        .or_else(dirs::data_local_dir)
         .or_else(|| std::env::temp_dir().parent().map(|p| p.to_path_buf()))
         .unwrap_or_else(std::env::temp_dir)
         .join(app_name)

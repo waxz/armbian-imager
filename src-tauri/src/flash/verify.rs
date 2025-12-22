@@ -35,8 +35,8 @@ pub fn verify_data<R: Read>(
     state.is_verifying.store(true, Ordering::SeqCst);
     state.verified_bytes.store(0, Ordering::SeqCst);
 
-    let mut image_file =
-        File::open(image_path).map_err(|e| format!("Failed to open image for verification: {}", e))?;
+    let mut image_file = File::open(image_path)
+        .map_err(|e| format!("Failed to open image for verification: {}", e))?;
 
     let chunk_size = config::flash::CHUNK_SIZE;
     let mut image_buffer = vec![0u8; chunk_size];
@@ -95,7 +95,11 @@ pub fn verify_data<R: Read>(
         }
 
         if image_buffer[..image_read] != device_buffer[..device_read] {
-            log_error!(MODULE, "Verification failed: data mismatch at byte {}", verified);
+            log_error!(
+                MODULE,
+                "Verification failed: data mismatch at byte {}",
+                verified
+            );
             return Err(format!(
                 "Verification failed: data mismatch at byte {}",
                 verified
@@ -106,7 +110,7 @@ pub fn verify_data<R: Read>(
         state.verified_bytes.store(verified, Ordering::SeqCst);
 
         // Log progress at configured interval
-        let current_percent = (verified * 100 / image_size) as u64;
+        let current_percent = verified * 100 / image_size;
         if current_percent >= last_logged_percent + config::flash::LOG_INTERVAL_PERCENT {
             log_info!(
                 MODULE,
@@ -123,9 +127,6 @@ pub fn verify_data<R: Read>(
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-    use std::io::Cursor;
-
     #[test]
     fn test_verify_matching_data() {
         // This test requires a temp file, which we'll skip for now

@@ -24,7 +24,12 @@ pub struct CustomImageInfo {
 pub async fn check_needs_decompression(image_path: String) -> Result<bool, String> {
     let path = PathBuf::from(&image_path);
     let needs = needs_decompression(&path);
-    log_info!("custom_image", "Check decompression for {}: {}", image_path, needs);
+    log_info!(
+        "custom_image",
+        "Check decompression for {}: {}",
+        image_path,
+        needs
+    );
     Ok(needs)
 }
 
@@ -52,7 +57,11 @@ pub async fn decompress_custom_image(
 
     match &result {
         Ok(path) => {
-            log_info!("custom_image", "Decompression completed: {}", path.display());
+            log_info!(
+                "custom_image",
+                "Decompression completed: {}",
+                path.display()
+            );
         }
         Err(e) => {
             log_error!("custom_image", "Decompression failed: {}", e);
@@ -64,9 +73,7 @@ pub async fn decompress_custom_image(
 
 /// Select a custom image file using native file picker
 #[tauri::command]
-pub async fn select_custom_image(
-    window: tauri::Window,
-) -> Result<Option<CustomImageInfo>, String> {
+pub async fn select_custom_image(window: tauri::Window) -> Result<Option<CustomImageInfo>, String> {
     use tauri_plugin_dialog::DialogExt;
 
     log_info!("custom_image", "Opening file picker dialog");
@@ -84,17 +91,19 @@ pub async fn select_custom_image(
 
     match file_path {
         Some(file_path) => {
-            let path_buf = file_path
-                .as_path()
-                .ok_or_else(|| {
-                    log_error!("custom_image", "Invalid path: not a valid file path");
-                    "Invalid path: not a valid file path".to_string()
-                })?;
-            let metadata = std::fs::metadata(path_buf)
-                .map_err(|e| {
-                    log_error!("custom_image", "Failed to read file info for {:?}: {}", path_buf, e);
-                    format!("Failed to read file info: {}", e)
-                })?;
+            let path_buf = file_path.as_path().ok_or_else(|| {
+                log_error!("custom_image", "Invalid path: not a valid file path");
+                "Invalid path: not a valid file path".to_string()
+            })?;
+            let metadata = std::fs::metadata(path_buf).map_err(|e| {
+                log_error!(
+                    "custom_image",
+                    "Failed to read file info for {:?}: {}",
+                    path_buf,
+                    e
+                );
+                format!("Failed to read file info: {}", e)
+            })?;
 
             let name = path_buf
                 .file_name()
@@ -102,7 +111,12 @@ pub async fn select_custom_image(
                 .unwrap_or("unknown")
                 .to_string();
 
-            log_info!("custom_image", "Selected custom image: {} ({} bytes)", name, metadata.len());
+            log_info!(
+                "custom_image",
+                "Selected custom image: {} ({} bytes)",
+                name,
+                metadata.len()
+            );
 
             Ok(Some(CustomImageInfo {
                 path: path_buf.to_string_lossy().to_string(),

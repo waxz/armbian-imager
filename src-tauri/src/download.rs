@@ -62,7 +62,7 @@ fn extract_filename(url: &str) -> Result<&str, String> {
     let url_path = url.split('?').next().unwrap_or(url);
     url_path
         .split('/')
-        .last()
+        .next_back()
         .filter(|s| !s.is_empty())
         .ok_or_else(|| "Invalid URL: no filename".to_string())
 }
@@ -78,7 +78,10 @@ async fn fetch_expected_sha(client: &Client, sha_url: &str) -> Result<String, St
         .map_err(|e| format!("Failed to fetch SHA: {}", e))?;
 
     if !response.status().is_success() {
-        return Err(format!("SHA fetch failed with status: {}", response.status()));
+        return Err(format!(
+            "SHA fetch failed with status: {}",
+            response.status()
+        ));
     }
 
     let content = response
@@ -207,14 +210,10 @@ pub async fn download_image(
 
     // Start download
     log_info!(MODULE, "Starting download...");
-    let response = client
-        .get(url)
-        .send()
-        .await
-        .map_err(|e| {
-            log_error!(MODULE, "Failed to start download: {}", e);
-            format!("Failed to start download: {}", e)
-        })?;
+    let response = client.get(url).send().await.map_err(|e| {
+        log_error!(MODULE, "Failed to start download: {}", e);
+        format!("Failed to start download: {}", e)
+    })?;
 
     if !response.status().is_success() {
         log_error!(MODULE, "Download failed with status: {}", response.status());

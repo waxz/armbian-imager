@@ -55,7 +55,11 @@ pub fn request_authorization(device_path: &str) -> Result<bool, String> {
 
         let mut auth_ref: AuthorizationRef = std::ptr::null_mut();
 
-        log_info!(MODULE, "Requesting authorization for device: {}", raw_device);
+        log_info!(
+            MODULE,
+            "Requesting authorization for device: {}",
+            raw_device
+        );
         log_debug!(MODULE, "Right name: {}", right_name);
 
         let status = AuthorizationCreate(

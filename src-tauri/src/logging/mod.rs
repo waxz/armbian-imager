@@ -34,7 +34,6 @@ impl LogLevel {
             LogLevel::Error => "ERROR",
         }
     }
-
 }
 
 /// Logger configuration
@@ -92,12 +91,7 @@ impl Logger {
         let log_filename = format!("armbian-imager_{}.log", timestamp);
         let log_path = log_dir.join(&log_filename);
 
-        match OpenOptions::new()
-            .create(true)
-            .write(true)
-            .append(true)
-            .open(&log_path)
-        {
+        match OpenOptions::new().create(true).append(true).open(&log_path) {
             Ok(file) => (Some(file), Some(log_path)),
             Err(e) => {
                 eprintln!("Failed to create log file: {}", e);
@@ -266,9 +260,7 @@ pub fn cleanup_old_logs(keep_count: usize) -> Result<usize, String> {
     let mut log_files: Vec<_> = fs::read_dir(&log_dir)
         .map_err(|e| format!("Failed to read log directory: {}", e))?
         .filter_map(|entry| entry.ok())
-        .filter(|entry| {
-            entry.path().extension().map_or(false, |ext| ext == "log")
-        })
+        .filter(|entry| entry.path().extension().is_some_and(|ext| ext == "log"))
         .collect();
 
     // Sort by modification time (newest first)

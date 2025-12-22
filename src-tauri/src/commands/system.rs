@@ -53,7 +53,10 @@ fn open_url_linux(url: &str) -> Result<(), String> {
 
     if euid == 0 {
         // Running as root - need to run xdg-open as the original user
-        log_info!(MODULE, "Running as root, attempting to open URL as original user");
+        log_info!(
+            MODULE,
+            "Running as root, attempting to open URL as original user"
+        );
 
         // Try to get the original user from PKEXEC_UID or SUDO_UID
         let target_uid = std::env::var("PKEXEC_UID")
@@ -121,7 +124,10 @@ fn open_url_linux(url: &str) -> Result<(), String> {
         }
 
         // Fallback: try xdg-open directly (might not work but worth trying)
-        log_info!(MODULE, "Could not determine original user, trying xdg-open directly");
+        log_info!(
+            MODULE,
+            "Could not determine original user, trying xdg-open directly"
+        );
     }
 
     // Not running as root, or fallback - use xdg-open directly

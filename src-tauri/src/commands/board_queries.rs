@@ -62,7 +62,11 @@ pub async fn get_images_for_board(
 
     let json_guard = state.images_json.lock().await;
     let json = json_guard.as_ref().ok_or_else(|| {
-        log_error!("board_queries", "Images not loaded when requesting board: {}", board_slug);
+        log_error!(
+            "board_queries",
+            "Images not loaded when requesting board: {}",
+            board_slug
+        );
         "Images not loaded. Call get_boards first.".to_string()
     })?;
 

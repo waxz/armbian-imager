@@ -2,14 +2,14 @@
 //!
 //! Uses PowerShell Get-Disk to enumerate block devices.
 
-use std::process::Command;
 use std::collections::HashMap;
+use std::process::Command;
 
 #[cfg(target_os = "windows")]
 use std::os::windows::process::CommandExt;
 
-use crate::utils::format_size;
 use crate::log_error;
+use crate::utils::format_size;
 
 use super::types::BlockDevice;
 
@@ -52,7 +52,11 @@ pub fn get_block_devices() -> Result<Vec<BlockDevice>, String> {
         })?;
 
     if !output.status.success() {
-        log_error!("devices", "PowerShell command failed with status: {:?}", output.status);
+        log_error!(
+            "devices",
+            "PowerShell command failed with status: {:?}",
+            output.status
+        );
         return Err("PowerShell command failed".to_string());
     }
 
@@ -113,7 +117,9 @@ pub fn get_block_devices() -> Result<Vec<BlockDevice>, String> {
         let is_removable = bus_type_str == "USB" || bus_type_str == "SD";
 
         // Mark as system disk (consistent with macOS/Linux behavior)
-        let is_system = system_disk.map(|sys_num| number == sys_num).unwrap_or(false);
+        let is_system = system_disk
+            .map(|sys_num| number == sys_num)
+            .unwrap_or(false);
 
         // Get drive letters from our pre-built map
         let name = match drive_letters_map.get(&number) {

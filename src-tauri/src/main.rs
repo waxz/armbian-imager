@@ -52,10 +52,19 @@ fn main() {
     // Log startup info
     log_info!("main", "=== Armbian Imager Starting ===");
     log_info!("main", "Version: {}", env!("CARGO_PKG_VERSION"));
-    log_info!("main", "OS: {} {}", std::env::consts::OS, std::env::consts::ARCH);
+    log_info!(
+        "main",
+        "OS: {} {}",
+        std::env::consts::OS,
+        std::env::consts::ARCH
+    );
     log_info!("main", "Config URLs:");
     log_info!("main", "  - Images API: {}", config::urls::ALL_IMAGES);
-    log_info!("main", "  - Board images: {}", config::urls::BOARD_IMAGES_BASE);
+    log_info!(
+        "main",
+        "  - Board images: {}",
+        config::urls::BOARD_IMAGES_BASE
+    );
 
     // Clean up any leftover download images from previous sessions
     cleanup_download_cache();
@@ -105,7 +114,7 @@ fn main() {
             #[cfg(debug_assertions)]
             {
                 if let Some(window) = app.get_webview_window("main") {
-                    let _ = window.open_devtools();
+                    window.open_devtools();
                 }
             }
             let _ = app; // Suppress unused warning in release

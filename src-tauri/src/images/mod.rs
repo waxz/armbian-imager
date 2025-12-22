@@ -15,22 +15,21 @@ use crate::{log_error, log_info};
 
 /// Fetch the all-images.json from Armbian
 pub async fn fetch_all_images() -> Result<serde_json::Value, String> {
-    log_info!("images", "Fetching all images from {}", config::urls::ALL_IMAGES);
+    log_info!(
+        "images",
+        "Fetching all images from {}",
+        config::urls::ALL_IMAGES
+    );
 
-    let response = reqwest::get(config::urls::ALL_IMAGES)
-        .await
-        .map_err(|e| {
-            log_error!("images", "Failed to fetch images: {}", e);
-            format!("Failed to fetch images: {}", e)
-        })?;
+    let response = reqwest::get(config::urls::ALL_IMAGES).await.map_err(|e| {
+        log_error!("images", "Failed to fetch images: {}", e);
+        format!("Failed to fetch images: {}", e)
+    })?;
 
-    let json: serde_json::Value = response
-        .json()
-        .await
-        .map_err(|e| {
-            log_error!("images", "Failed to parse JSON response: {}", e);
-            format!("Failed to parse JSON: {}", e)
-        })?;
+    let json: serde_json::Value = response.json().await.map_err(|e| {
+        log_error!("images", "Failed to parse JSON response: {}", e);
+        format!("Failed to parse JSON: {}", e)
+    })?;
 
     log_info!("images", "Successfully fetched images data");
     Ok(json)

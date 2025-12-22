@@ -69,7 +69,10 @@ pub fn decompress_with_system_xz(
     loop {
         // Check for cancellation
         if state.is_cancelled.load(Ordering::SeqCst) {
-            log_info!(MODULE, "Decompression cancelled by user, killing xz process");
+            log_info!(
+                MODULE,
+                "Decompression cancelled by user, killing xz process"
+            );
             let _ = child.kill();
             let _ = child.wait();
             drop(output_file);
@@ -273,10 +276,7 @@ pub fn decompress_local_file(
         log_info!(MODULE, "Decompressing ZSTD format");
         decompress_with_zstd(input_path, &output_path, state)
     } else {
-        return Err(format!(
-            "Unsupported compression format for: {}",
-            filename
-        ));
+        return Err(format!("Unsupported compression format for: {}", filename));
     };
 
     result?;

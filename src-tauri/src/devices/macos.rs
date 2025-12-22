@@ -4,14 +4,13 @@
 
 use std::process::Command;
 
-use crate::utils::format_size;
 use crate::log_error;
+use crate::utils::format_size;
 
 use super::types::BlockDevice;
 
 /// Get list of block devices on macOS
 pub fn get_block_devices() -> Result<Vec<BlockDevice>, String> {
-
     let output = Command::new("diskutil")
         .args(["list", "-plist", "external", "physical"])
         .output()
@@ -94,10 +93,7 @@ fn parse_diskutil(_plist_data: &[u8]) -> Result<Vec<BlockDevice>, String> {
 
 /// Get the system disk identifier
 fn get_system_disk() -> Option<String> {
-    let output = Command::new("diskutil")
-        .args(["info", "/"])
-        .output()
-        .ok()?;
+    let output = Command::new("diskutil").args(["info", "/"]).output().ok()?;
 
     let info = String::from_utf8_lossy(&output.stdout);
     for line in info.lines() {
@@ -114,7 +110,12 @@ fn get_disk_info(disk_path: &str) -> Result<BlockDevice, String> {
         .args(["info", disk_path])
         .output()
         .map_err(|e| {
-            log_error!("devices", "Failed to get disk info for {}: {}", disk_path, e);
+            log_error!(
+                "devices",
+                "Failed to get disk info for {}: {}",
+                disk_path,
+                e
+            );
             format!("Failed to get disk info: {}", e)
         })?;
 

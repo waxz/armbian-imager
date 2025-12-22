@@ -7,10 +7,10 @@
 
 mod verify;
 
-#[cfg(target_os = "macos")]
-mod macos;
 #[cfg(target_os = "linux")]
 mod linux;
+#[cfg(target_os = "macos")]
+mod macos;
 #[cfg(target_os = "windows")]
 mod windows;
 
@@ -51,18 +51,18 @@ impl FlashState {
 }
 
 // Re-export the platform-specific flash_image function
-#[cfg(target_os = "macos")]
-pub use macos::flash_image;
 #[cfg(target_os = "linux")]
 pub use linux::flash_image;
+#[cfg(target_os = "macos")]
+pub use macos::flash_image;
 #[cfg(target_os = "windows")]
 pub use windows::flash_image;
 
 // Re-export authorization functions
-#[cfg(target_os = "macos")]
-pub use macos::request_authorization;
 #[cfg(target_os = "linux")]
 pub use linux::request_authorization;
+#[cfg(target_os = "macos")]
+pub use macos::request_authorization;
 
 /// Request authorization before flashing (platform-specific)
 /// On macOS: Shows Touch ID / password dialog

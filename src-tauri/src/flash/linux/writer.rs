@@ -124,11 +124,7 @@ pub async fn flash_image(
     let mut device = match open_device_udisks2(device_path).await {
         Ok(file) => file,
         Err(e) => {
-            log_info!(
-                MODULE,
-                "UDisks2 open failed ({}), trying direct open...",
-                e
-            );
+            log_info!(MODULE, "UDisks2 open failed ({}), trying direct open...", e);
             open_device_direct(device_path)?
         }
     };

@@ -155,10 +155,7 @@ pub fn open_device_with_saved_auth(device_path: &str) -> Result<OpenDeviceResult
         libc::close(sock_pair[0]);
 
         if size <= 0 {
-            return Err(format!(
-                "Failed to receive file descriptor (size={})",
-                size
-            ));
+            return Err(format!("Failed to receive file descriptor (size={})", size));
         }
 
         if libc::WIFEXITED(status) && libc::WEXITSTATUS(status) != 0 {
@@ -279,9 +276,16 @@ pub async fn flash_image(
     }
 
     // Use inner function to do the actual work, then always free auth at the end
-    let result =
-        do_flash_work(image_path, device_path, &mut device, device_fd, image_size, state, verify)
-            .await;
+    let result = do_flash_work(
+        image_path,
+        device_path,
+        &mut device,
+        device_fd,
+        image_size,
+        state,
+        verify,
+    )
+    .await;
 
     drop(device);
 

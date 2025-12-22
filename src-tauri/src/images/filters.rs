@@ -145,16 +145,22 @@ pub fn get_unique_boards(images: &[ArmbianImage]) -> Vec<BoardInfo> {
         .map(|(slug, data)| {
             let name = data.board_name.unwrap_or(data.original_slug);
 
-            let has_platinum_support = data.platinum_support_until
+            let has_platinum_support = data
+                .platinum_support_until
                 .as_ref()
                 .and_then(|until| chrono::NaiveDate::parse_from_str(until, "%Y-%m-%d").ok())
                 .map(|exp_date| exp_date >= today)
                 .unwrap_or(false);
 
-            let has_logo = data.vendor_logo.as_ref().map(|l| !l.is_empty()).unwrap_or(false);
+            let has_logo = data
+                .vendor_logo
+                .as_ref()
+                .map(|l| !l.is_empty())
+                .unwrap_or(false);
             let (vendor_id, vendor_display, vendor_logo) = if has_logo {
                 let id = data.vendor.unwrap_or_else(|| "other".to_string());
-                let display = data.vendor_name
+                let display = data
+                    .vendor_name
                     .filter(|n| !n.is_empty())
                     .unwrap_or_else(|| capitalize_vendor(&id));
                 (id, display, data.vendor_logo)
@@ -163,9 +169,8 @@ pub fn get_unique_boards(images: &[ArmbianImage]) -> Vec<BoardInfo> {
             };
 
             // Community is shown only if no standard or platinum support
-            let has_community_support = data.has_community_support
-                && !data.has_standard_support
-                && !has_platinum_support;
+            let has_community_support =
+                data.has_community_support && !data.has_standard_support && !has_platinum_support;
 
             // EOS is shown only if no other support level
             let has_eos_support = data.has_eos_support
@@ -302,7 +307,11 @@ pub fn filter_images_for_board(
             promoted: img.promoted.as_deref() == Some("true"),
             file_url: img.file_url.clone().unwrap_or_default(),
             file_url_sha: img.file_url_sha.clone(),
-            file_size: img.file_size.as_ref().and_then(|s| s.parse().ok()).unwrap_or(0),
+            file_size: img
+                .file_size
+                .as_ref()
+                .and_then(|s| s.parse().ok())
+                .unwrap_or(0),
             download_repository: img.download_repository.clone().unwrap_or_default(),
         })
         .collect();

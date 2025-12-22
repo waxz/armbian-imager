@@ -7,8 +7,8 @@ pub mod custom_image;
 pub mod operations;
 pub mod progress;
 pub mod scraping;
-pub mod system;
 mod state;
+pub mod system;
 
 // Re-export state for use in main.rs
 pub use state::AppState;

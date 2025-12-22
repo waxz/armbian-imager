@@ -4,8 +4,8 @@
 
 use std::process::Command;
 
-use crate::utils::format_size;
 use crate::log_error;
+use crate::utils::format_size;
 
 use super::types::BlockDevice;
 
@@ -21,7 +21,11 @@ pub fn get_block_devices() -> Result<Vec<BlockDevice>, String> {
         })?;
 
     if !output.status.success() {
-        log_error!("devices", "lsblk command failed with status: {:?}", output.status);
+        log_error!(
+            "devices",
+            "lsblk command failed with status: {:?}",
+            output.status
+        );
         return Err("lsblk command failed".to_string());
     }
 
@@ -30,10 +34,11 @@ pub fn get_block_devices() -> Result<Vec<BlockDevice>, String> {
     let system_disks = get_system_disks();
 
     // Parse JSON output
-    let json: serde_json::Value = serde_json::from_str(&stdout)
-        .map_err(|e| format!("Failed to parse lsblk JSON: {}", e))?;
+    let json: serde_json::Value =
+        serde_json::from_str(&stdout).map_err(|e| format!("Failed to parse lsblk JSON: {}", e))?;
 
-    let blockdevices = json["blockdevices"].as_array()
+    let blockdevices = json["blockdevices"]
+        .as_array()
         .ok_or("Invalid lsblk JSON structure")?;
 
     for dev in blockdevices {
@@ -57,9 +62,9 @@ pub fn get_block_devices() -> Result<Vec<BlockDevice>, String> {
         let dev_name = path.strip_prefix("/dev/").unwrap_or(path);
 
         // Mark as system disk instead of skipping (consistent with macOS behavior)
-        let is_system = system_disks.iter().any(|sys| {
-            sys.starts_with(dev_name) || dev_name.starts_with(sys)
-        });
+        let is_system = system_disks
+            .iter()
+            .any(|sys| sys.starts_with(dev_name) || dev_name.starts_with(sys));
 
         // Parse size - can be string or number in JSON
         let size: u64 = match &dev["size"] {
@@ -139,7 +144,7 @@ fn get_system_disks() -> Vec<String> {
                         system_disks.push(pkname);
                     }
                 }
-                if let Some(name) = source.split('/').last() {
+                if let Some(name) = source.split('/').next_back() {
                     system_disks.push(name.to_string());
                 }
             }

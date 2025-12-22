@@ -35,7 +35,12 @@ pub async fn flash_image(
 ) -> Result<(), String> {
     state.reset();
 
-    log_info!(MODULE, "Starting flash: {} -> {}", image_path.display(), device_path);
+    log_info!(
+        MODULE,
+        "Starting flash: {} -> {}",
+        image_path.display(),
+        device_path
+    );
 
     let image_size = std::fs::metadata(image_path)
         .map_err(|e| format!("Failed to get image size: {}", e))?
@@ -191,8 +196,8 @@ fn lock_disk_volumes(disk_number: u32) -> Result<VolumeLocks, String> {
         CloseHandle, GetLastError, GENERIC_READ, GENERIC_WRITE, INVALID_HANDLE_VALUE, MAX_PATH,
     };
     use windows_sys::Win32::Storage::FileSystem::{
-        CreateFileW, FILE_SHARE_READ, FILE_SHARE_WRITE, FindFirstVolumeW, FindNextVolumeW,
-        FindVolumeClose, OPEN_EXISTING,
+        CreateFileW, FindFirstVolumeW, FindNextVolumeW, FindVolumeClose, FILE_SHARE_READ,
+        FILE_SHARE_WRITE, OPEN_EXISTING,
     };
     use windows_sys::Win32::System::Ioctl::{FSCTL_DISMOUNT_VOLUME, FSCTL_LOCK_VOLUME};
     use windows_sys::Win32::System::IO::DeviceIoControl;
@@ -221,18 +226,31 @@ fn lock_disk_volumes(disk_number: u32) -> Result<VolumeLocks, String> {
         let find_handle = FindFirstVolumeW(volume_name.as_mut_ptr(), MAX_PATH);
         if find_handle.is_null() {
             log_warn!(MODULE, "FindFirstVolumeW failed: {}", GetLastError());
-            return Ok(VolumeLocks { handles: locked_handles });
+            return Ok(VolumeLocks {
+                handles: locked_handles,
+            });
         }
 
         loop {
-            let vol_len = volume_name.iter().position(|&c| c == 0).unwrap_or(volume_name.len());
+            let vol_len = volume_name
+                .iter()
+                .position(|&c| c == 0)
+                .unwrap_or(volume_name.len());
             let vol_str = String::from_utf16_lossy(&volume_name[..vol_len]);
 
             // Remove trailing backslash for CreateFile
             let vol_path: Vec<u16> = if vol_len > 0 && volume_name[vol_len - 1] == b'\\' as u16 {
-                volume_name[..vol_len - 1].iter().copied().chain(std::iter::once(0)).collect()
+                volume_name[..vol_len - 1]
+                    .iter()
+                    .copied()
+                    .chain(std::iter::once(0))
+                    .collect()
             } else {
-                volume_name[..vol_len].iter().copied().chain(std::iter::once(0)).collect()
+                volume_name[..vol_len]
+                    .iter()
+                    .copied()
+                    .chain(std::iter::once(0))
+                    .collect()
             };
 
             let vol_handle = CreateFileW(
@@ -322,7 +340,9 @@ fn lock_disk_volumes(disk_number: u32) -> Result<VolumeLocks, String> {
     }
 
     log_info!(MODULE, "Holding {} volume lock(s)", locked_handles.len());
-    Ok(VolumeLocks { handles: locked_handles })
+    Ok(VolumeLocks {
+        handles: locked_handles,
+    })
 }
 
 #[cfg(not(target_os = "windows"))]
@@ -368,8 +388,8 @@ fn verify_with_sector_alignment(
     state.is_verifying.store(true, Ordering::SeqCst);
     state.verified_bytes.store(0, Ordering::SeqCst);
 
-    let mut image_file = std::fs::File::open(image_path)
-        .map_err(|e| format!("Failed to open image: {}", e))?;
+    let mut image_file =
+        std::fs::File::open(image_path).map_err(|e| format!("Failed to open image: {}", e))?;
 
     let image_size = state.total_bytes.load(Ordering::SeqCst);
 
@@ -384,7 +404,12 @@ fn verify_with_sector_alignment(
     let chunk_size = config::flash::CHUNK_SIZE;
     let aligned_chunk_size = (chunk_size / sector_size) * sector_size;
 
-    log_debug!(MODULE, "Sector size: {} bytes, chunk size: {} bytes", sector_size, aligned_chunk_size);
+    log_debug!(
+        MODULE,
+        "Sector size: {} bytes, chunk size: {} bytes",
+        sector_size,
+        aligned_chunk_size
+    );
 
     let mut image_buffer = vec![0u8; aligned_chunk_size];
     let mut device_buffer = vec![0u8; aligned_chunk_size];
@@ -413,7 +438,13 @@ fn verify_with_sector_alignment(
         while total_read < device_read_size {
             let n = device
                 .read(&mut device_buffer[total_read..device_read_size])
-                .map_err(|e| format!("Failed to read device at byte {}: {}", verified + total_read as u64, e))?;
+                .map_err(|e| {
+                    format!(
+                        "Failed to read device at byte {}: {}",
+                        verified + total_read as u64,
+                        e
+                    )
+                })?;
             if n == 0 {
                 break;
             }
@@ -495,7 +526,11 @@ fn get_device_sector_size(device: &std::fs::File) -> Result<usize, String> {
         let sector_size = geometry.bytes_per_sector as usize;
 
         if sector_size < 512 || sector_size > 8192 || (sector_size & (sector_size - 1)) != 0 {
-            log_warn!(MODULE, "Invalid sector size {}, using default 512", sector_size);
+            log_warn!(
+                MODULE,
+                "Invalid sector size {}, using default 512",
+                sector_size
+            );
             return Ok(512);
         }
 
@@ -506,7 +541,9 @@ fn get_device_sector_size(device: &std::fs::File) -> Result<usize, String> {
 /// Opens device for writing with write-through caching.
 #[cfg(target_os = "windows")]
 fn open_device_for_write(device_path: &str) -> Result<std::fs::File, String> {
-    use windows_sys::Win32::Foundation::{GetLastError, GENERIC_READ, GENERIC_WRITE, INVALID_HANDLE_VALUE};
+    use windows_sys::Win32::Foundation::{
+        GetLastError, GENERIC_READ, GENERIC_WRITE, INVALID_HANDLE_VALUE,
+    };
     use windows_sys::Win32::Storage::FileSystem::{
         CreateFileW, FILE_SHARE_READ, FILE_SHARE_WRITE, OPEN_EXISTING,
     };
@@ -582,7 +619,10 @@ fn open_device_for_read(device_path: &str) -> Result<std::fs::File, String> {
 
         if handle == INVALID_HANDLE_VALUE || handle.is_null() {
             let error_code = GetLastError();
-            return Err(format!("Failed to open {} for reading: error {}", device_path, error_code));
+            return Err(format!(
+                "Failed to open {} for reading: error {}",
+                device_path, error_code
+            ));
         }
 
         log_debug!(MODULE, "Device opened for reading");

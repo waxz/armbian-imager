@@ -27,10 +27,17 @@ fn collect_logs() -> Result<String, String> {
 
     // Add header with system info
     content.push_str("=== Armbian Imager Log Upload ===\n");
-    content.push_str(&format!("Timestamp: {}\n", chrono::Local::now().format("%Y-%m-%d %H:%M:%S")));
+    content.push_str(&format!(
+        "Timestamp: {}\n",
+        chrono::Local::now().format("%Y-%m-%d %H:%M:%S")
+    ));
     content.push_str(&format!("App Version: {}\n", env!("CARGO_PKG_VERSION")));
-    content.push_str(&format!("OS: {} {}\n", std::env::consts::OS, std::env::consts::ARCH));
-    content.push_str("\n");
+    content.push_str(&format!(
+        "OS: {} {}\n",
+        std::env::consts::OS,
+        std::env::consts::ARCH
+    ));
+    content.push('\n');
 
     // Get current session log
     if let Some(log_path) = get_current_log_path() {
@@ -53,9 +60,7 @@ fn collect_logs() -> Result<String, String> {
         let mut log_files: Vec<_> = fs::read_dir(&log_dir)
             .map_err(|e| format!("Failed to read log directory: {}", e))?
             .filter_map(|entry| entry.ok())
-            .filter(|entry| {
-                entry.path().extension().map_or(false, |ext| ext == "log")
-            })
+            .filter(|entry| entry.path().extension().is_some_and(|ext| ext == "log"))
             .collect();
 
         // Sort by modification time (newest first)
@@ -82,14 +87,20 @@ fn collect_logs() -> Result<String, String> {
                 break;
             }
 
-            content.push_str(&format!("\n=== Previous Log: {} ===\n", path.file_name().unwrap_or_default().to_string_lossy()));
+            content.push_str(&format!(
+                "\n=== Previous Log: {} ===\n",
+                path.file_name().unwrap_or_default().to_string_lossy()
+            ));
 
             match fs::read_to_string(&path) {
                 Ok(log_content) => {
                     // Limit previous logs to last 500 lines
                     let lines: Vec<&str> = log_content.lines().collect();
                     if lines.len() > 500 {
-                        content.push_str(&format!("... (truncated, showing last 500 of {} lines)\n", lines.len()));
+                        content.push_str(&format!(
+                            "... (truncated, showing last 500 of {} lines)\n",
+                            lines.len()
+                        ));
                         for line in lines.iter().skip(lines.len() - 500) {
                             content.push_str(line);
                             content.push('\n');

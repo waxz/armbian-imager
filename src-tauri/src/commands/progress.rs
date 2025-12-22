@@ -35,9 +35,15 @@ pub async fn get_download_progress(state: State<'_, AppState>) -> Result<Downloa
     let ds = &state.download_state;
 
     let total = ds.total_bytes.load(std::sync::atomic::Ordering::SeqCst);
-    let downloaded = ds.downloaded_bytes.load(std::sync::atomic::Ordering::SeqCst);
-    let is_verifying_sha = ds.is_verifying_sha.load(std::sync::atomic::Ordering::SeqCst);
-    let is_decompressing = ds.is_decompressing.load(std::sync::atomic::Ordering::SeqCst);
+    let downloaded = ds
+        .downloaded_bytes
+        .load(std::sync::atomic::Ordering::SeqCst);
+    let is_verifying_sha = ds
+        .is_verifying_sha
+        .load(std::sync::atomic::Ordering::SeqCst);
+    let is_decompressing = ds
+        .is_decompressing
+        .load(std::sync::atomic::Ordering::SeqCst);
 
     let progress = if total > 0 {
         (downloaded as f64 / total as f64) * 100.0
