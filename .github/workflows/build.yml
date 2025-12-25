@@ -89,6 +89,8 @@ jobs:
           prerelease: false
           generateReleaseNotes: true
           allowUpdates: true
+          omitBodyDuringUpdate: true
+          omitNameDuringUpdate: true
           replacesArtifacts: false
 
   build-linux-x64:
@@ -179,8 +181,9 @@ jobs:
           name: "Armbian Imager ${{ needs.create-release.outputs.release_tag }}"
           draft: true
           prerelease: false
-          generateReleaseNotes: false
           allowUpdates: true
+          omitBodyDuringUpdate: true
+          omitNameDuringUpdate: true
           replacesArtifacts: false
           artifacts: |
             src-tauri/target/release/bundle/deb/*.deb
@@ -275,8 +278,9 @@ jobs:
           name: "Armbian Imager ${{ needs.create-release.outputs.release_tag }}"
           draft: true
           prerelease: false
-          generateReleaseNotes: false
           allowUpdates: true
+          omitBodyDuringUpdate: true
+          omitNameDuringUpdate: true
           replacesArtifacts: false
           artifacts: |
             src-tauri/target/release/bundle/deb/*.deb
@@ -400,8 +404,9 @@ jobs:
           name: "Armbian Imager ${{ needs.create-release.outputs.release_tag }}"
           draft: true
           prerelease: false
-          generateReleaseNotes: false
           allowUpdates: true
+          omitBodyDuringUpdate: true
+          omitNameDuringUpdate: true
           replacesArtifacts: false
           artifacts: |
             src-tauri/target/${{ matrix.target }}/release/bundle/macos/*-${{ matrix.arch }}.app.zip
@@ -487,8 +492,9 @@ jobs:
           name: "Armbian Imager ${{ needs.create-release.outputs.release_tag }}"
           draft: true
           prerelease: false
-          generateReleaseNotes: false
           allowUpdates: true
+          omitBodyDuringUpdate: true
+          omitNameDuringUpdate: true
           replacesArtifacts: false
           artifacts: |
             src-tauri/target/x86_64-pc-windows-msvc/release/bundle/msi/*.msi
@@ -574,8 +580,9 @@ jobs:
           name: "Armbian Imager ${{ needs.create-release.outputs.release_tag }}"
           draft: true
           prerelease: false
-          generateReleaseNotes: false
           allowUpdates: true
+          omitBodyDuringUpdate: true
+          omitNameDuringUpdate: true
           replacesArtifacts: false
           artifacts: |
             src-tauri/target/aarch64-pc-windows-msvc/release/bundle/msi/*.msi
@@ -725,6 +732,7 @@ jobs:
           tag: ${{ needs.create-release.outputs.release_tag }}
           name: "Armbian Imager ${{ needs.create-release.outputs.release_tag }}"
           allowUpdates: true
+          omitBodyDuringUpdate: true
           draft: false
           prerelease: false
 
