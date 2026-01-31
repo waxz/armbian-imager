@@ -97,6 +97,7 @@ jobs:
       fail-fast: false # let other jobs try to complete if one fails
       matrix:
         arch:
+          - { name: 'amd64-22', runner: 'ubuntu-22.04' }
           - { name: 'amd64', runner: 'ubuntu-24.04' }
           - { name: 'arm64', runner: "ubuntu-24.04-arm" }
         type:
